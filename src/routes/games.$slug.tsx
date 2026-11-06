@@ -28,17 +28,18 @@ function GamePage() {
   const { avg, count } = ratingOf(game.id);
   const add = useAddToClass();
   return (
-    <div className="mx-auto max-w-5xl space-y-6 px-4 py-8">
-      <div className="aspect-[5/3] overflow-hidden rounded-[2rem] shadow-card">
+    <div className="mx-auto grid max-w-[1200px] gap-8 px-4 py-12 sm:px-6 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] md:items-start lg:px-8">
+      <div className="aspect-[5/3] overflow-hidden rounded-3xl border border-secondary">
         <Cover game={game} eager />
       </div>
-      <h1 className="text-5xl">{game.title}</h1>
-      <p className="text-muted-foreground">by {getCreator(game.creatorId).name}</p>
+      <div className="space-y-4">
+      <h1 className="text-4xl">{game.title}</h1>
+      <p className="font-semibold text-muted-foreground">by {getCreator(game.creatorId).name}</p>
       <p className="flex items-center gap-2 font-bold">
         <Stars value={avg} /> {avg} ({count} reviews)
       </p>
-      <p className="text-lg">{game.description}</p>
-      <div className="flex flex-wrap gap-3">
+      <p className="text-lg font-semibold">{game.description}</p>
+      <div className="flex flex-wrap gap-3 pt-2">
         {isPlayable(game.slug) && (
           <Link to="/play/$slug" params={{ slug: game.slug }} className="btn-3d tone-leaf">
             Play it now
@@ -48,6 +49,7 @@ function GamePage() {
           Add to class · {formatPrice(game.price)}
         </button>
         <WishHeart game={game} />
+      </div>
       </div>
     </div>
   );

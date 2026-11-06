@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { Heart, Star } from "lucide-react";
 import { toast } from "sonner";
-import { GameCoverFill, GameTile } from "@/components/game-tile";
+import { GameScene, SCENES } from "@/components/game-scene";
 import { Pip as MascotPip, type PipPose } from "@/components/mascot";
 import type { Creator, Game } from "@/data/types";
 import { formatPrice, getCreator, gradeRange, ratingOf } from "@/lib/catalog";
@@ -29,11 +29,10 @@ export function Pip({
   return <MascotPip pose={POSES[pose]} size={96} className={cn("pip--still", className)} />;
 }
 
-/** Cover for a marketplace game: the studio's icon tile, keyed by its first skill. */
-const coverKey = (game: Game) => ({ id: game.id, skill: game.skills[0] ?? "" });
-
+/** Cover for a marketplace game: a flat Pip scene redrawn from its original cover art. */
 export function Cover({ game, className }: { game: Game; className?: string; eager?: boolean }) {
-  return <GameCoverFill game={coverKey(game)} className={className} />;
+  const scene = SCENES[game.coverIndex % SCENES.length] ?? "pond";
+  return <GameScene scene={scene} className={cn(game.coverFlip && "-scale-x-100", className)} />;
 }
 
 export function Stars({
@@ -153,7 +152,7 @@ export function WishHeart({ game, className }: { game: Game; className?: string 
   );
 }
 
-/** Marketplace game card, built like the studio's: tile, title, facts, one action. */
+/** Marketplace game card, built like the studio's: cover scene, title, facts, one action. */
 export function GameCard({
   game,
   className,
@@ -169,17 +168,19 @@ export function GameCard({
   return (
     <article
       className={cn(
-        "group relative flex w-64 shrink-0 flex-col rounded-3xl border border-secondary bg-card p-5 transition hover:-translate-y-0.5 hover:border-info",
+        "group relative flex w-64 shrink-0 flex-col overflow-hidden rounded-3xl border border-secondary bg-card transition hover:-translate-y-0.5 hover:border-info",
         className,
       )}
     >
+      <div className="aspect-[5/3] overflow-hidden">
+        <Cover game={game} />
+      </div>
       <Link
         to="/games/$slug"
         params={{ slug: game.slug }}
-        className="flex flex-1 flex-col after:absolute after:inset-0 after:rounded-3xl"
+        className="flex flex-1 flex-col px-5 pt-4 after:absolute after:inset-0 after:rounded-3xl"
       >
-        <div className="mb-4 flex items-start justify-between gap-3">
-          <GameTile game={coverKey(game)} size="md" />
+        <div className="mb-2">
           <SkillTag skill={tag ?? game.skills[0] ?? ""} />
         </div>
         <h3 className="text-lg leading-tight group-hover:text-info">{game.title}</h3>
@@ -191,7 +192,7 @@ export function GameCard({
           {avg.toFixed(1)}
         </p>
       </Link>
-      <div className="relative mt-4 flex items-center justify-between gap-2">
+      <div className="relative mt-4 flex items-center justify-between gap-2 px-5 pb-5">
         <p className="font-display text-lg font-extrabold">{formatPrice(game.price)}</p>
         <button
           type="button"
