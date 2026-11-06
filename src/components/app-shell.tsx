@@ -45,7 +45,9 @@ function Logo() {
       <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground">
         <ShieldCheck className="h-6 w-6" strokeWidth={2.5} />
       </span>
-      <span className="text-xl font-black tracking-tight text-primary">SkillPlay</span>
+      <span className="font-display text-2xl font-extrabold text-info">
+        Kit<span className="text-danger">bit</span>
+      </span>
     </Link>
   );
 }
@@ -93,7 +95,7 @@ function Avatar() {
       type="button"
       aria-label="Profile"
       title="Profile"
-      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-b-4 border-secondary bg-info-soft text-info transition hover:brightness-95"
+      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-secondary bg-info-soft text-info transition hover:brightness-95"
     >
       <UserRound className="h-5 w-5" strokeWidth={2.5} />
     </button>
@@ -120,7 +122,7 @@ function TopNav() {
             aria-expanded={open}
             aria-controls="mobile-nav"
             aria-label={open ? "Close menu" : "Open menu"}
-            className="flex h-10 w-10 items-center justify-center rounded-xl border-2 border-b-4 border-secondary transition hover:bg-muted lg:hidden"
+            className="flex h-10 w-10 items-center justify-center rounded-xl border border-secondary transition hover:bg-muted lg:hidden"
           >
             {open ? (
               <X className="h-5 w-5" strokeWidth={3} />
@@ -148,7 +150,9 @@ function Footer() {
     <footer className="mt-20 border-t-2 border-secondary">
       <Container className="flex flex-col gap-4 py-8 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="font-black text-primary">SkillPlay</p>
+          <p className="font-display text-lg font-extrabold text-info">
+            Kit<span className="text-danger">bit</span>
+          </p>
           <p className="text-sm font-semibold text-muted-foreground">
             Every game gets a safety check before it reaches classrooms.
           </p>

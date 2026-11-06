@@ -17,10 +17,10 @@ const C = {
   log: "#C4843F",
   logEnd: "#E8B57A",
   logRing: "#A0662F",
-  hat: "#FFC800",
-  hatBrim: "#E5B400",
-  water: "#1CB0F6",
-  ink: "#4B4B4B",
+  hat: "#E9B452",
+  hatBrim: "#CA933E",
+  water: "#7FA99A",
+  ink: "#361C11",
 };
 
 /** Arm angles (degrees, around the shoulder; 0 = hanging straight down) and head tilt per pose. */
@@ -35,14 +35,14 @@ const POSE: Record<PipPose, { l: number; r: number; tilt: number; sitting?: bool
 };
 
 const CONFETTI = [
-  { dx: -46, dy: -40, rot: 140, c: "#58CC02" },
-  { dx: -30, dy: -58, rot: -90, c: "#1CB0F6" },
-  { dx: -8, dy: -64, rot: 200, c: "#FFC800" },
-  { dx: 14, dy: -62, rot: -160, c: "#FF4B4B" },
-  { dx: 34, dy: -54, rot: 120, c: "#FF9600" },
-  { dx: 50, dy: -36, rot: -220, c: "#58CC02" },
-  { dx: -56, dy: -16, rot: 90, c: "#FF9600" },
-  { dx: 58, dy: -12, rot: -120, c: "#1CB0F6" },
+  { dx: -46, dy: -40, rot: 140, c: "#267D30" },
+  { dx: -30, dy: -58, rot: -90, c: "#7FA99A" },
+  { dx: -8, dy: -64, rot: 200, c: "#E9B452" },
+  { dx: 14, dy: -62, rot: -160, c: "#B54531" },
+  { dx: 34, dy: -54, rot: 120, c: "#BF7B1F" },
+  { dx: 50, dy: -36, rot: -220, c: "#267D30" },
+  { dx: -56, dy: -16, rot: 90, c: "#BF7B1F" },
+  { dx: 58, dy: -12, rot: -120, c: "#7FA99A" },
 ];
 
 /**
@@ -252,10 +252,10 @@ function Clipboard() {
     <g>
       <rect x="65" y="100" width="30" height="36" rx="5" fill="#C98F5E" />
       <rect x="69" y="106" width="22" height="26" rx="2.5" fill="#fff" />
-      <rect x="73" y="97" width="14" height="7" rx="2.5" fill="#AFAFAF" />
-      <rect x="72" y="112" width="16" height="2.5" rx="1.25" fill="#E5E5E5" />
-      <rect x="72" y="118" width="12" height="2.5" rx="1.25" fill="#E5E5E5" />
-      <rect x="72" y="124" width="14" height="2.5" rx="1.25" fill="#58CC02" />
+      <rect x="73" y="97" width="14" height="7" rx="2.5" fill="#B6ACA1" />
+      <rect x="72" y="112" width="16" height="2.5" rx="1.25" fill="#E5E1DA" />
+      <rect x="72" y="118" width="12" height="2.5" rx="1.25" fill="#E5E1DA" />
+      <rect x="72" y="124" width="14" height="2.5" rx="1.25" fill="#267D30" />
     </g>
   );
 }
@@ -266,7 +266,7 @@ function MagnifyingGlass() {
     <g className="pip-glass">
       <rect x="-2.5" y="22" width="5" height="10" rx="2.5" fill={C.tail} />
       <circle cx="0" cy="40" r="10" fill={C.ink} />
-      <circle cx="0" cy="40" r="7" fill="#DDF4FF" />
+      <circle cx="0" cy="40" r="7" fill="#DEF1E1" />
       <circle cx="-2.5" cy="37.5" r="2" fill="#fff" />
     </g>
   );

@@ -235,7 +235,7 @@ function FindingCard({ f }: { f: Finding }) {
           <p className="mb-0.5 flex flex-wrap items-center gap-2 text-xs font-bold text-muted-foreground">
             <span
               className={cn(
-                "rounded-full px-2 py-0.5 font-extrabold uppercase",
+                "rounded-full px-2 py-0.5 font-extrabold",
                 SEVERITY_CLS[f.severity],
               )}
             >
@@ -306,7 +306,7 @@ function ResubmitForm({
                 <li key={f.id} className="flex items-start gap-2 rounded-2xl bg-muted p-3">
                   <span
                     className={cn(
-                      "mt-0.5 shrink-0 rounded-full px-2 py-0.5 text-xs font-extrabold uppercase",
+                      "mt-0.5 shrink-0 rounded-full px-2 py-0.5 text-xs font-extrabold",
                       SEVERITY_CLS[f.severity],
                     )}
                   >

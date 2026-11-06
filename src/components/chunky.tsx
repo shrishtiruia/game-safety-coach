@@ -18,7 +18,7 @@ import {
 import type { Category } from "@/lib/eval-config";
 
 export const chunkyVariants = cva(
-  "inline-flex items-center justify-center gap-2 rounded-2xl font-extrabold uppercase tracking-wide transition-all border-b-4 active:border-b-0 active:translate-y-1 disabled:opacity-60 disabled:pointer-events-none",
+  "inline-flex items-center justify-center gap-2 rounded-2xl font-display text-base font-extrabold transition-all border-b-4 active:border-b-0 active:translate-y-1 disabled:opacity-60 disabled:pointer-events-none",
   {
     variants: {
       variant: {
@@ -28,7 +28,7 @@ export const chunkyVariants = cva(
         ghost: "bg-background text-info border-2 border-b-4 border-secondary hover:bg-muted",
       },
       size: {
-        md: "h-12 px-6 text-sm",
+        md: "h-12 px-6",
         lg: "h-16 px-10 text-lg w-full sm:w-auto",
       },
     },

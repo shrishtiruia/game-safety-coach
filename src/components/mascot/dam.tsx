@@ -69,7 +69,7 @@ export function Dam({
       aria-hidden={label ? undefined : true}
     >
       {/* Pool behind the dam */}
-      <rect x="0" y="40" width="80" height="76" rx="10" fill="#1CB0F6" opacity="0.08" />
+      <rect x="0" y="40" width="80" height="76" rx="10" fill="#7FA99A" opacity="0.08" />
       <rect
         className="dam-water"
         x="0"
@@ -77,7 +77,7 @@ export function Dam({
         width="80"
         height={116 - waterTop}
         rx="8"
-        fill="#1CB0F6"
+        fill="#7FA99A"
         opacity="0.35"
       />
       {/* Riverbed */}
@@ -93,7 +93,7 @@ export function Dam({
               cx={pos.cx}
               cy={pos.cy}
               r="11"
-              fill="#E5E5E5"
+              fill="#E5E1DA"
             />
           );
         }
@@ -108,7 +108,7 @@ export function Dam({
               <path
                 className="dam-leak"
                 d={`M${pos.cx + 13} ${pos.cy - 2} q-4 7 0 9 q4 -2 0 -9z`}
-                fill="#1CB0F6"
+                fill="#7FA99A"
               />
             )}
           </g>

@@ -153,7 +153,7 @@ function GameCard({
 
   const meta = `${SKILL_LABEL[g.skill]} · Grades ${g.grade_band} · ${g.duration_minutes} min · ${FORMAT_LABEL[g.format]}`;
   const cardCls =
-    "group flex h-full flex-col rounded-3xl border-2 border-b-4 border-secondary bg-card p-6 transition hover:-translate-y-0.5 hover:border-info active:translate-y-0.5";
+    "group flex h-full flex-col rounded-3xl border border-secondary bg-card p-6 transition hover:-translate-y-0.5 hover:border-info";
 
   const body = (
     <>

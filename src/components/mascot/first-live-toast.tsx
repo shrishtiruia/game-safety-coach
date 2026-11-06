@@ -30,7 +30,7 @@ export function useFirstLiveCelebration() {
     setShowing(true);
     toast.custom(
       () => (
-        <div className="flex items-center gap-3 rounded-3xl border-2 border-b-4 border-secondary bg-background py-2 pl-2 pr-5 font-[Nunito]">
+        <div className="flex items-center gap-3 rounded-3xl border border-secondary bg-background py-2 pl-2 pr-5 font-[Nunito]">
           <Pip pose="celebrating" size={64} />
           <div>
             <p className="font-black">Your first game is live!</p>

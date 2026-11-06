@@ -7,7 +7,7 @@ export function MakerStatusChip({ status, className }: { status: string; classNa
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-extrabold uppercase tracking-wide",
+        "inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-extrabold",
         live ? "bg-primary-soft text-primary-pressed" : "bg-muted text-muted-foreground",
         className,
       )}
