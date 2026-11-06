@@ -14,12 +14,12 @@ import { resubmitGame } from "@/lib/evaluation.functions";
 import { CATEGORY_INFO, SEVERITY_LABEL, type Category, type Severity } from "@/lib/eval-config";
 import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/submit/$id/result")({
+export const Route = createFileRoute("/studio/submit/$id/result")({
   head: () => ({
     meta: [
-      { title: "Safety check result · SkillPlay" },
+      { title: "Safety check result · Kitbit Studio" },
       { name: "description", content: "Your safety check result and what to do next." },
-      { property: "og:title", content: "Safety check result · SkillPlay" },
+      { property: "og:title", content: "Safety check result · Kitbit Studio" },
       { property: "og:description", content: "Your safety check result and what to do next." },
     ],
   }),
@@ -56,7 +56,7 @@ function ResultStep() {
       >
         <ChunkyButton
           size="lg"
-          onClick={() => navigate({ to: "/submit/$id/check", params: { id } })}
+          onClick={() => navigate({ to: "/studio/submit/$id/check", params: { id } })}
         >
           Run safety check
         </ChunkyButton>
@@ -107,7 +107,7 @@ function ResultStep() {
         <>
           <div className="mb-12 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
             {live ? (
-              <Link to="/" className={chunkyVariants({ size: "lg" })}>
+              <Link to="/studio" className={chunkyVariants({ size: "lg" })}>
                 Go to My games
               </Link>
             ) : (
@@ -115,7 +115,7 @@ function ResultStep() {
                 <ChunkyButton size="lg" onClick={() => setFixing(true)}>
                   Fix now and resubmit
                 </ChunkyButton>
-                <ChunkyButton size="lg" variant="ghost" onClick={() => navigate({ to: "/" })}>
+                <ChunkyButton size="lg" variant="ghost" onClick={() => navigate({ to: "/studio" })}>
                   Save to drafts
                 </ChunkyButton>
               </>
@@ -366,7 +366,7 @@ function ResubmitForm({
                 data: { gameId: game.id, description: desc, durationMinutes: dur },
               });
               await qc.invalidateQueries();
-              navigate({ to: "/submit/$id/check", params: { id: game.id } });
+              navigate({ to: "/studio/submit/$id/check", params: { id: game.id } });
             } catch (e) {
               console.error(e);
               setError("We couldn't send it back. Your game is still saved in drafts.");

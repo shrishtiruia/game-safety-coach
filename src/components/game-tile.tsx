@@ -1,9 +1,16 @@
 import {
   Blocks,
+  Ear,
   Handshake,
+  Hourglass,
   MessageCircleHeart,
   MessagesSquare,
   Mic,
+  Signpost,
+  Smartphone,
+  Smile,
+  Sprout,
+  Target,
   Trophy,
   type LucideIcon,
 } from "lucide-react";
@@ -17,6 +24,13 @@ const ICONS: Record<CoverIcon, LucideIcon> = {
   stacked_blocks: Blocks,
   trophy: Trophy,
   heart_chat: MessageCircleHeart,
+  ear: Ear,
+  hourglass: Hourglass,
+  target: Target,
+  sprout: Sprout,
+  phone: Smartphone,
+  signpost: Signpost,
+  smile: Smile,
 };
 
 const COLORS: Record<CoverColor, string> = {
@@ -41,7 +55,7 @@ export function GameTile({
 }: {
   game: { id: string; skill: string };
   size?: keyof typeof SIZES;
-  className?: string;
+  className?: string | undefined;
 }) {
   const { cover_icon, cover_color } = getCover(game);
   const Icon = ICONS[cover_icon];
@@ -58,5 +72,29 @@ export function GameTile({
     >
       <Icon className={s.icon} strokeWidth={2.5} />
     </span>
+  );
+}
+
+/** The same cover, filling its container: card thumbnails and game page headers. */
+export function GameCoverFill({
+  game,
+  className,
+}: {
+  game: { id: string; skill: string };
+  className?: string | undefined;
+}) {
+  const { cover_icon, cover_color } = getCover(game);
+  const Icon = ICONS[cover_icon];
+  return (
+    <div
+      aria-hidden
+      className={cn(
+        "flex h-full w-full items-center justify-center text-primary-foreground",
+        COLORS[cover_color],
+        className,
+      )}
+    >
+      <Icon className="h-1/3 w-1/3 max-h-24 max-w-24" strokeWidth={2.25} />
+    </div>
   );
 }

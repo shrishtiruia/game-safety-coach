@@ -4,7 +4,7 @@ import { Container } from "@/components/app-shell";
 import { GameTile } from "@/components/game-tile";
 import { cn } from "@/lib/utils";
 
-const STEPS = ["Submit game", "Safety check", "Result"] as const;
+const STEPS = ["Upload game", "Safety check", "Result"] as const;
 
 /** Shared frame for the three submit steps: a stepper, a title, then the step's content. */
 export function SubmitFlow({

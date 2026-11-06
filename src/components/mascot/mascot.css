@@ -286,3 +286,12 @@
     transform: none;
   }
 }
+
+/* Still Pip: marketplace artwork and thumbnails, where the beaver is an
+   illustration rather than a character reacting to something. */
+.pip--still * {
+  animation: none !important;
+}
+.pip--still .pip-confetti {
+  display: none;
+}

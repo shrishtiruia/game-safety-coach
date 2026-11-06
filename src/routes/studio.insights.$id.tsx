@@ -21,15 +21,15 @@ import { FORMAT_LABEL, SKILL_LABEL } from "@/lib/eval-config";
 import { funnel, getGameInsights, outcomesByGrade, stats } from "@/lib/insights-data";
 import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/insights/$id")({
+export const Route = createFileRoute("/studio/insights/$id")({
   head: () => ({
     meta: [
-      { title: "Game insights · SkillPlay" },
+      { title: "Game insights · Kitbit Studio" },
       {
         name: "description",
         content: "What teachers are saying about your game, and the top things to improve.",
       },
-      { property: "og:title", content: "Game insights · SkillPlay" },
+      { property: "og:title", content: "Game insights · Kitbit Studio" },
       {
         property: "og:description",
         content: "What teachers are saying about your game, and the top things to improve.",
@@ -68,7 +68,7 @@ function GameInsights() {
     return (
       <Container className="py-10">
         <Breadcrumbs
-          items={[{ label: "Insights", to: "/insights" }, { label: game?.title ?? "Game" }]}
+          items={[{ label: "Insights", to: "/studio/insights" }, { label: game?.title ?? "Game" }]}
         />
         {liveNoReviews ? (
           <div className="flex flex-col items-center py-10 text-center">
@@ -77,7 +77,7 @@ function GameInsights() {
             <p className="mb-6 mt-1 font-semibold text-muted-foreground">
               It's live. Insights appear once teachers try it.
             </p>
-            <Link to="/" className={chunkyVariants()}>
+            <Link to="/studio" className={chunkyVariants()}>
               Back to My games
             </Link>
           </div>
@@ -88,7 +88,7 @@ function GameInsights() {
               Insights show up once a game is live and teachers start using it.
             </p>
             <Link
-              to="/insights"
+              to="/studio/insights"
               className="mt-4 inline-flex rounded-xl font-extrabold text-info hover:underline"
             >
               Back to Insights
@@ -130,7 +130,7 @@ function Dashboard({
 
   return (
     <Container className="py-10">
-      <Breadcrumbs items={[{ label: "Insights", to: "/insights" }, { label: game.title }]} />
+      <Breadcrumbs items={[{ label: "Insights", to: "/studio/insights" }, { label: game.title }]} />
 
       <header className="mb-10 flex items-center gap-6">
         <GameTile game={game} size="lg" />

@@ -1,30 +1,48 @@
-import { Link, useRouterState } from "@tanstack/react-router";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { Fragment, useEffect, useState, type ReactNode } from "react";
-import { ChevronRight, Menu, ShieldCheck, UserRound, X } from "lucide-react";
+import {
+  ArrowLeft,
+  ChevronRight,
+  Menu,
+  Plus,
+  Puzzle,
+  Search,
+  ShoppingBasket,
+  UserRound,
+  X,
+} from "lucide-react";
+import { chunkyVariants } from "@/components/chunky";
 import { Toaster } from "@/components/ui/sonner";
+import { emptyFilters } from "@/lib/catalog";
+import { useStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
 
 /**
- * Shared site shell: sticky top nav, centered page container and footer.
- * Buy-side and sell-side pages render inside it via the root route.
+ * Shared site shell: one sticky top nav, centered page container and footer.
+ * The marketplace (buy side) and the studio (/studio, sell side) each get their
+ * own nav links; "Upload a game" and "Browse games" link the two.
  */
-type NavItem = {
+type StudioItem = {
   label: string;
-  to: "/" | "/insights" | "/submit";
+  to: "/studio" | "/studio/insights" | "/studio/submit";
   match: (path: string) => boolean;
 };
 
-export const NAV_ITEMS: NavItem[] = [
-  { label: "My games", to: "/", match: (p) => p === "/" },
-  { label: "Insights", to: "/insights", match: (p) => p.startsWith("/insights") },
-  { label: "Submit a game", to: "/submit", match: (p) => p.startsWith("/submit") },
+export const NAV_ITEMS: StudioItem[] = [
+  { label: "My games", to: "/studio", match: (p) => p === "/studio" || p === "/studio/" },
+  { label: "Insights", to: "/studio/insights", match: (p) => p.startsWith("/studio/insights") },
+  { label: "Upload a game", to: "/studio/submit", match: (p) => p.startsWith("/studio/submit") },
 ];
+
+const isStudio = (path: string) => path === "/studio" || path.startsWith("/studio/");
 
 export function AppShell({ children }: { children: ReactNode }) {
   return (
     <div className="flex min-h-screen flex-col">
       <TopNav />
-      <div className="flex-1">{children}</div>
+      <main id="main" className="flex-1">
+        {children}
+      </main>
       <Footer />
       <Toaster position="top-center" offset={88} />
     </div>
@@ -39,33 +57,36 @@ export function Container({ className, children }: { className?: string; childre
   );
 }
 
-function Logo() {
+function Logo({ studio }: { studio: boolean }) {
   return (
-    <Link to="/" className="flex shrink-0 items-center gap-2.5 rounded-2xl">
+    <Link to="/" className="flex shrink-0 items-center gap-2.5 rounded-2xl" aria-label="Kitbit home">
       <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-        <ShieldCheck className="h-6 w-6" strokeWidth={2.5} />
+        <Puzzle className="h-6 w-6" strokeWidth={2.5} />
       </span>
       <span className="font-display text-2xl font-extrabold text-info">
         Kit<span className="text-danger">bit</span>
       </span>
+      {studio && (
+        <span className="rounded-full bg-muted px-2.5 py-0.5 text-xs font-extrabold text-muted-foreground">
+          Studio
+        </span>
+      )}
     </Link>
   );
 }
 
-function NavLinks({
-  path,
-  vertical,
-  onNavigate,
-}: {
-  path: string;
-  vertical?: boolean;
-  onNavigate?: () => void;
-}) {
+const linkCls = (active: boolean) =>
+  cn(
+    "flex items-center gap-2 whitespace-nowrap rounded-xl px-3 py-2 font-extrabold transition-colors",
+    active
+      ? "bg-primary-soft text-primary-pressed"
+      : "text-foreground hover:bg-muted hover:text-primary-pressed",
+  );
+
+function StudioLinks({ path, onNavigate }: { path: string; onNavigate?: () => void }) {
   return (
-    <ul className={cn("flex", vertical ? "flex-col gap-1" : "items-center gap-1")}>
-      {NAV_ITEMS.map((item) => {
-        const base =
-          "flex items-center gap-2 whitespace-nowrap rounded-xl px-3 py-2 font-extrabold transition-colors";
+    <>
+      {NAV_ITEMS.slice(0, 2).map((item) => {
         const active = item.match(path);
         return (
           <li key={item.label}>
@@ -73,49 +94,124 @@ function NavLinks({
               to={item.to}
               onClick={onNavigate}
               aria-current={active ? "page" : undefined}
-              className={cn(
-                base,
-                active
-                  ? "bg-primary-soft text-primary-pressed"
-                  : "text-foreground hover:bg-muted hover:text-primary-pressed",
-              )}
+              className={linkCls(active)}
             >
               {item.label}
             </Link>
           </li>
         );
       })}
-    </ul>
+    </>
   );
 }
 
-function Avatar() {
+function MarketLinks({ path, onNavigate }: { path: string; onNavigate?: () => void }) {
   return (
-    <button
-      type="button"
-      aria-label="Profile"
-      title="Profile"
+    <>
+      <li>
+        <Link
+          to="/search"
+          search={emptyFilters}
+          onClick={onNavigate}
+          className={linkCls(path.startsWith("/search"))}
+        >
+          Browse
+        </Link>
+      </li>
+      <li>
+        <Link to="/community" onClick={onNavigate} className={linkCls(path.startsWith("/community"))}>
+          Community
+        </Link>
+      </li>
+    </>
+  );
+}
+
+function NavSearch() {
+  const [q, setQ] = useState("");
+  const navigate = useNavigate();
+  return (
+    <form
+      role="search"
+      className="hidden h-11 max-w-sm flex-1 items-center gap-2 rounded-2xl border border-secondary bg-muted px-4 xl:flex"
+      onSubmit={(e) => {
+        e.preventDefault();
+        navigate({ to: "/search", search: { ...emptyFilters, q } });
+      }}
+    >
+      <Search className="size-5 shrink-0 text-muted-foreground" aria-hidden />
+      <input
+        value={q}
+        onChange={(e) => setQ(e.target.value)}
+        placeholder="Search games and skills"
+        aria-label="Search games"
+        className="w-full bg-transparent font-semibold outline-none placeholder:text-muted-foreground"
+      />
+    </form>
+  );
+}
+
+function CartLink() {
+  const { cart } = useStore();
+  return (
+    <Link
+      to="/cart"
+      aria-label={`Cart, ${cart.length} items`}
+      className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-secondary transition hover:bg-muted"
+    >
+      <ShoppingBasket className="h-5 w-5" strokeWidth={2.5} />
+      {cart.length > 0 && (
+        <span className="absolute -right-1.5 -top-1.5 grid size-5 place-items-center rounded-full bg-danger text-[11px] font-black text-primary-foreground">
+          {cart.length}
+        </span>
+      )}
+    </Link>
+  );
+}
+
+function ProfileLink() {
+  return (
+    <Link
+      to="/profile"
+      aria-label="My profile and classes"
       className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-secondary bg-info-soft text-info transition hover:brightness-95"
     >
       <UserRound className="h-5 w-5" strokeWidth={2.5} />
-    </button>
+    </Link>
   );
 }
 
 function TopNav() {
   const path = useRouterState({ select: (s) => s.location.pathname });
+  const studio = isStudio(path);
   const [open, setOpen] = useState(false);
   useEffect(() => setOpen(false), [path]);
+  const close = () => setOpen(false);
+
+  const crossLink = studio ? (
+    <Link to="/" className={chunkyVariants({ variant: "ghost" })}>
+      <ArrowLeft className="h-5 w-5" strokeWidth={3} /> Browse games
+    </Link>
+  ) : (
+    <Link to="/studio/submit" className={chunkyVariants()}>
+      <Plus className="h-5 w-5" strokeWidth={3} /> Upload a game
+    </Link>
+  );
 
   return (
     <header className="sticky top-0 z-40 border-b-2 border-secondary bg-background/95 backdrop-blur">
       <Container className="flex h-[72px] items-center gap-4 lg:gap-6">
-        <Logo />
+        <Logo studio={studio} />
         <nav aria-label="Main" className="hidden lg:block">
-          <NavLinks path={path} />
+          <ul className="flex items-center gap-1">
+            {studio ? <StudioLinks path={path} /> : <MarketLinks path={path} />}
+          </ul>
         </nav>
+        {!studio && <NavSearch />}
         <div className="ml-auto flex items-center gap-2">
-          <Avatar />
+          <div className="hidden sm:block">{crossLink}</div>
+          {!studio && <CartLink />}
+          <ProfileLink />
           <button
             type="button"
             onClick={() => setOpen((o) => !o)}
@@ -134,10 +230,17 @@ function TopNav() {
       </Container>
       {open && (
         <div id="mobile-nav" className="border-t-2 border-secondary lg:hidden">
-          <Container className="py-4">
+          <Container className="space-y-4 py-4">
             <nav aria-label="Main">
-              <NavLinks path={path} vertical onNavigate={() => setOpen(false)} />
+              <ul className="flex flex-col gap-1">
+                {studio ? (
+                  <StudioLinks path={path} onNavigate={close} />
+                ) : (
+                  <MarketLinks path={path} onNavigate={close} />
+                )}
+              </ul>
             </nav>
+            <div className="sm:hidden">{crossLink}</div>
           </Container>
         </div>
       )}
@@ -154,10 +257,15 @@ function Footer() {
             Kit<span className="text-danger">bit</span>
           </p>
           <p className="text-sm font-semibold text-muted-foreground">
-            Every game gets a safety check before it reaches classrooms.
+            Soft-skill games made by teachers. Every one gets a safety check first.
           </p>
         </div>
         <ul className="flex flex-wrap gap-x-6 gap-y-2 text-sm font-extrabold">
+          <li>
+            <Link to="/search" search={emptyFilters} className="rounded hover:text-primary-pressed hover:underline">
+              Browse games
+            </Link>
+          </li>
           {NAV_ITEMS.map((item) => (
             <li key={item.label}>
               <Link to={item.to} className="rounded hover:text-primary-pressed hover:underline">
@@ -171,7 +279,7 @@ function Footer() {
   );
 }
 
-export type Crumb = { label: string; to?: "/" | "/insights" };
+export type Crumb = { label: string; to?: "/studio" | "/studio/insights" };
 
 export function Breadcrumbs({ items }: { items: Crumb[] }) {
   return (

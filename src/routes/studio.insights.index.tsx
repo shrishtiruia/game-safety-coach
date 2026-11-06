@@ -9,15 +9,15 @@ import { isLive } from "@/lib/game-status";
 import { getGameInsights, stats } from "@/lib/insights-data";
 import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/insights/")({
+export const Route = createFileRoute("/studio/insights/")({
   head: () => ({
     meta: [
-      { title: "Insights · SkillPlay" },
+      { title: "Insights · Kitbit Studio" },
       {
         name: "description",
         content: "How your live games are doing in classrooms, and which one to improve first.",
       },
-      { property: "og:title", content: "Insights · SkillPlay" },
+      { property: "og:title", content: "Insights · Kitbit Studio" },
       {
         property: "og:description",
         content: "How your live games are doing in classrooms, and which one to improve first.",
@@ -151,7 +151,7 @@ function InsightsOverview() {
                   <p className="text-xs font-bold text-muted-foreground">completion</p>
                 </div>
                 <Link
-                  to="/insights/$id"
+                  to="/studio/insights/$id"
                   params={{ id: game.id }}
                   className={cn(
                     top

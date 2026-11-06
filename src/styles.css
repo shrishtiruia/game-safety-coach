@@ -46,6 +46,22 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+
+  /* Marketplace color names, mapped onto the shared tokens. */
+  --color-honey: var(--info);
+  --color-honey-edge: var(--info-pressed);
+  --color-honey-soft: var(--info-soft);
+  --color-leaf: var(--primary);
+  --color-leaf-edge: var(--primary-pressed);
+  --color-leaf-soft: var(--primary-soft);
+  --color-berry: var(--danger);
+  --color-berry-edge: var(--danger-pressed);
+  --color-berry-soft: var(--danger-soft);
+  --color-sky: var(--sky);
+  --color-sky-edge: var(--sky-edge);
+  --color-sky-soft: var(--sky-soft);
+  --color-star: var(--sun);
+  --color-cream: var(--muted);
 }
 
 /* Kitbit palette: warm, muted, earthy. Token names are unchanged so every
@@ -73,6 +89,9 @@
   --warning-soft: oklch(0.95 0.045 85);
   --sun: oklch(0.8 0.13 80); /* star */
   --sun-soft: oklch(0.96 0.04 88);
+  --sky: oklch(0.8 0.045 150); /* sage */
+  --sky-edge: oklch(0.6 0.05 150);
+  --sky-soft: oklch(0.945 0.02 120);
   --secondary: oklch(0.91 0.01 80);
   --secondary-foreground: oklch(0.26 0.045 45);
   --muted: oklch(0.96 0.008 85);
@@ -118,3 +137,94 @@
 }
 @utility animate-pop { animation: pop-in 0.45s cubic-bezier(.2,.9,.3,1.4) both; }
 @utility animate-bob { animation: bob 1.6s ease-in-out infinite; }
+
+/* ---------- Marketplace utilities, restyled to the studio's look ---------- */
+
+/* Chunky button: same shape as chunkyVariants. Color comes from tone-* below. */
+@utility btn-3d {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 3rem;
+  padding: 0 1.5rem;
+  border-radius: 1rem;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1rem;
+  background: var(--b, var(--primary));
+  color: var(--b-fg, var(--primary-foreground));
+  border: var(--b-border, 0) solid var(--b-edge, var(--primary-pressed));
+  border-bottom: 4px solid var(--b-edge, var(--primary-pressed));
+  transition: filter 0.15s, transform 0.1s, border-bottom-width 0.1s;
+  cursor: pointer;
+  &:hover { filter: brightness(1.05); }
+  &:active { border-bottom-width: 0; transform: translateY(4px); }
+  &:disabled { opacity: 0.6; pointer-events: none; }
+}
+@utility tone-leaf { --b: var(--primary); --b-edge: var(--primary-pressed); --b-fg: var(--primary-foreground); }
+@utility tone-honey { --b: var(--info); --b-edge: var(--info-pressed); --b-fg: var(--primary-foreground); }
+@utility tone-berry { --b: var(--danger); --b-edge: var(--danger-pressed); --b-fg: var(--primary-foreground); }
+@utility tone-sky { --b: var(--sky); --b-edge: var(--sky-edge); --b-fg: var(--foreground); }
+@utility tone-cream { --b: var(--background); --b-edge: var(--secondary); --b-border: 2px; --b-fg: var(--info); }
+
+/* Filter chips */
+@utility sticker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 2.75rem;
+  padding: 0.5rem 0.9rem;
+  border-radius: 1rem;
+  background: var(--background);
+  border: 1px solid var(--secondary);
+  font-weight: 800;
+  cursor: pointer;
+  &:hover { background: var(--muted); }
+  &[data-active="true"] { background: var(--primary-soft); border-color: var(--primary); color: var(--primary-pressed); }
+}
+
+/* Kept as quiet no-ops so existing markup still compiles to something sensible. */
+@utility card-tilt { transition: transform 0.2s; &:hover { transform: translateY(-2px); } }
+@utility shadow-card { box-shadow: none; }
+@utility bg-hero-fade {
+  background: linear-gradient(90deg, color-mix(in oklab, var(--foreground) 80%, transparent) 0%, color-mix(in oklab, var(--foreground) 35%, transparent) 60%, transparent 100%);
+}
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+}
+
+/* Feelings Fishing (playable game): fish swim across the pond; they stop under a
+   finger or mouse so small hands can catch them. With reduced motion they sit still. */
+@keyframes confetti-fall {
+  0% { transform: translate3d(0,0,0) rotate(0); opacity: 1; }
+  100% { transform: translate3d(var(--dx), 105vh, 0) rotate(720deg); opacity: 0.9; }
+}
+@keyframes kb-swim { from { left: -170px; } to { left: 100%; } }
+@keyframes kb-swim-rev { from { left: 100%; } to { left: -170px; } }
+@keyframes kb-wiggle { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-12deg); } 75% { transform: rotate(12deg); } }
+.kb-fish { animation: kb-swim 18s linear infinite; transition: transform 150ms; }
+.kb-fish:active { transform: scale(0.94); }
+.kb-fish-rev { animation-name: kb-swim-rev; }
+.kb-fish-hint { animation-play-state: paused; outline: 4px solid var(--sun); outline-offset: 2px; }
+.kb-wiggle { animation: kb-wiggle 0.4s ease-in-out 2; }
+@keyframes kb-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+@keyframes kb-wag { from { transform: rotate(-9deg); } to { transform: rotate(9deg); } }
+@keyframes kb-bubble { 0% { transform: translateY(0) scale(0.6); opacity: 0; } 15% { opacity: 1; } 100% { transform: translateY(-340px) scale(1.2); opacity: 0; } }
+@keyframes kb-ripple { 0% { transform: scale(0.4); opacity: 0.9; } 100% { transform: scale(1.8); opacity: 0; } }
+@keyframes kb-jump { 0% { transform: translateY(0) rotate(0); } 45% { transform: translateY(-70px) rotate(-14deg); } 100% { transform: translateY(-30px) rotate(0) scale(1.15); } }
+@keyframes kb-splash { from { transform: translateX(-50%) scale(0.5); opacity: 1; } to { transform: translateX(-50%) scale(1.4); opacity: 0; } }
+.kb-bob { animation: kb-bob 2.6s ease-in-out infinite; }
+.kb-tail { animation: kb-wag 0.7s ease-in-out infinite alternate; }
+.kb-bubble { animation: kb-bubble 7s ease-in infinite; opacity: 0; }
+.kb-ripple { animation: kb-ripple 3.6s ease-out infinite; }
+.kb-jump { animation: kb-jump 0.7s cubic-bezier(.3,.7,.4,1) forwards; }
+.kb-splash { animation: kb-splash 0.7s ease-out forwards; }
+.kb-pond-still .kb-fish { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) {
+  .kb-pond { display: flex; flex-wrap: wrap; align-content: center; justify-content: center; gap: 1rem; }
+  .kb-fish { position: relative; animation: none; top: auto !important; left: auto; }
+  .kb-wiggle, .kb-bob, .kb-tail, .kb-bubble, .kb-ripple, .kb-jump, .kb-splash { animation: none; }
+  .kb-bubble { display: none; }
+}

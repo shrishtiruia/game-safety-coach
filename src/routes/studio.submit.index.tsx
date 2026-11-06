@@ -9,15 +9,15 @@ import { SubmitFlow } from "@/components/submit-flow";
 import { FORMAT_LABEL, SKILL_LABEL } from "@/lib/eval-config";
 import { createGame, GRADE_BANDS } from "@/lib/submit.functions";
 
-export const Route = createFileRoute("/submit/")({
+export const Route = createFileRoute("/studio/submit/")({
   head: () => ({
     meta: [
-      { title: "Submit a game · SkillPlay" },
+      { title: "Upload a game · Kitbit Studio" },
       {
         name: "description",
         content: "Tell us about your game, then it gets a quick safety check before going live.",
       },
-      { property: "og:title", content: "Submit a game · SkillPlay" },
+      { property: "og:title", content: "Upload a game · Kitbit Studio" },
       {
         property: "og:description",
         content: "Tell us about your game, then it gets a quick safety check before going live.",
@@ -51,7 +51,7 @@ function SubmitStep() {
   return (
     <SubmitFlow
       step={1}
-      title="Submit a game"
+      title="Upload a game"
       sub="Tell us about your game. Next, it gets six quick safety checks, then it can go live."
     >
       <form
@@ -63,7 +63,7 @@ function SubmitStep() {
           try {
             const { id } = await create({ data: form });
             await qc.invalidateQueries();
-            navigate({ to: "/submit/$id/check", params: { id } });
+            navigate({ to: "/studio/submit/$id/check", params: { id } });
           } catch (err) {
             console.error(err);
             setError("We couldn't save your game. Please try again.");
@@ -169,7 +169,7 @@ function SubmitStep() {
         )}
         <div className="flex flex-col-reverse items-stretch gap-3 pt-2 sm:flex-row sm:items-center sm:justify-end">
           <Link
-            to="/"
+            to="/studio"
             className="rounded-xl px-4 py-3 text-center font-extrabold text-muted-foreground hover:text-foreground"
           >
             Cancel

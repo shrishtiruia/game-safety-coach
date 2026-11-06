@@ -46,7 +46,7 @@ const CONFETTI = [
 ];
 
 /**
- * Pip, the SkillPlay beaver. One SVG, many poses.
+ * Pip, the Kitbit beaver. One SVG, many poses.
  * Decorative by default (aria-hidden); pass `label` to announce it.
  */
 export function Pip({

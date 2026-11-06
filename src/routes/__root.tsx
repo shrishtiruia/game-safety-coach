@@ -38,7 +38,7 @@ function NotFoundComponent() {
         </p>
         <div className="mt-6">
           <Link to="/" className={chunkyVariants()}>
-            Go to My games
+            Go home
           </Link>
         </div>
       </div>
@@ -85,10 +85,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "SkillPlay Safety Check" },
+      { title: "Kitbit · Soft-skill games for classrooms" },
       {
         name: "description",
-        content: "Safety and learning checks for classroom soft-skills games.",
+        content: "Teacher-made games that build empathy, teamwork and focus. Every game is safety-checked.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

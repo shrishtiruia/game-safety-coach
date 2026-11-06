@@ -13,12 +13,12 @@ import { isLive } from "@/lib/game-status";
 import { useGameDetail } from "@/lib/game-queries";
 import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/submit/$id/check")({
+export const Route = createFileRoute("/studio/submit/$id/check")({
   head: () => ({
     meta: [
-      { title: "Running safety check · SkillPlay" },
+      { title: "Running safety check · Kitbit Studio" },
       { name: "description", content: "Six safety and learning checks running on your game." },
-      { property: "og:title", content: "Running safety check · SkillPlay" },
+      { property: "og:title", content: "Running safety check · Kitbit Studio" },
       {
         property: "og:description",
         content: "Six safety and learning checks running on your game.",
@@ -79,7 +79,7 @@ function LiveCheck() {
         if (isLive(final.result)) queueFirstLiveCelebration();
         await sleep(900);
         await qc.invalidateQueries();
-        navigate({ to: "/submit/$id/result", params: { id } });
+        navigate({ to: "/studio/submit/$id/result", params: { id } });
       } catch (e) {
         console.error(e);
         setError("Something hiccupped. Your game is saved in drafts, so you can try again.");
@@ -127,7 +127,7 @@ function LiveCheck() {
         <div className="min-w-0">
           {error ? (
             <Link
-              to="/"
+              to="/studio"
               className="inline-flex rounded-xl font-extrabold text-info hover:underline"
             >
               Back to My games

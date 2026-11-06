@@ -1,6 +1,6 @@
 # Pip the beaver
 
-Shared mascot for SkillPlay. Import from `@/components/mascot` so every page uses the same beaver.
+Shared mascot for Kitbit. Import from `@/components/mascot` so every page uses the same beaver.
 
 ```tsx
 import { Pip, SpeechBubble, Dam } from "@/components/mascot";

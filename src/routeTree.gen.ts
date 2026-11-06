@@ -10,102 +10,271 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as InsightsIndexRouteImport } from './routes/insights.index'
-import { Route as InsightsIdRouteImport } from './routes/insights.$id'
-import { Route as SubmitIndexRouteImport } from './routes/submit.index'
-import { Route as SubmitIdCheckRouteImport } from './routes/submit.$id.check'
-import { Route as SubmitIdResultRouteImport } from './routes/submit.$id.result'
+import { Route as CartRouteImport } from './routes/cart'
+import { Route as CommunityRouteImport } from './routes/community'
+import { Route as GoalsRouteImport } from './routes/goals'
+import { Route as LeaderboardRouteImport } from './routes/leaderboard'
+import { Route as LibraryRouteImport } from './routes/library'
+import { Route as PlanRouteImport } from './routes/plan'
+import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as SearchRouteImport } from './routes/search'
+import { Route as FamilyIdRouteImport } from './routes/family.$id'
+import { Route as GamesSlugRouteImport } from './routes/games.$slug'
+import { Route as PlaySlugRouteImport } from './routes/play.$slug'
+import { Route as StudentsIdRouteImport } from './routes/students.$id'
+import { Route as StudioIndexRouteImport } from './routes/studio.index'
+import { Route as StudioInsightsIndexRouteImport } from './routes/studio.insights.index'
+import { Route as StudioInsightsIdRouteImport } from './routes/studio.insights.$id'
+import { Route as StudioSubmitIndexRouteImport } from './routes/studio.submit.index'
+import { Route as StudioSubmitIdCheckRouteImport } from './routes/studio.submit.$id.check'
+import { Route as StudioSubmitIdResultRouteImport } from './routes/studio.submit.$id.result'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const InsightsIndexRoute = InsightsIndexRouteImport.update({
-  id: '/insights/',
-  path: '/insights/',
+const CartRoute = CartRouteImport.update({
+  id: '/cart',
+  path: '/cart',
   getParentRoute: () => rootRouteImport,
 } as any)
-const InsightsIdRoute = InsightsIdRouteImport.update({
-  id: '/insights/$id',
-  path: '/insights/$id',
+const CommunityRoute = CommunityRouteImport.update({
+  id: '/community',
+  path: '/community',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SubmitIndexRoute = SubmitIndexRouteImport.update({
-  id: '/submit/',
-  path: '/submit/',
+const GoalsRoute = GoalsRouteImport.update({
+  id: '/goals',
+  path: '/goals',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SubmitIdCheckRoute = SubmitIdCheckRouteImport.update({
-  id: '/submit/$id/check',
-  path: '/submit/$id/check',
+const LeaderboardRoute = LeaderboardRouteImport.update({
+  id: '/leaderboard',
+  path: '/leaderboard',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SubmitIdResultRoute = SubmitIdResultRouteImport.update({
-  id: '/submit/$id/result',
-  path: '/submit/$id/result',
+const LibraryRoute = LibraryRouteImport.update({
+  id: '/library',
+  path: '/library',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlanRoute = PlanRouteImport.update({
+  id: '/plan',
+  path: '/plan',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SearchRoute = SearchRouteImport.update({
+  id: '/search',
+  path: '/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FamilyIdRoute = FamilyIdRouteImport.update({
+  id: '/family/$id',
+  path: '/family/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GamesSlugRoute = GamesSlugRouteImport.update({
+  id: '/games/$slug',
+  path: '/games/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlaySlugRoute = PlaySlugRouteImport.update({
+  id: '/play/$slug',
+  path: '/play/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StudentsIdRoute = StudentsIdRouteImport.update({
+  id: '/students/$id',
+  path: '/students/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StudioIndexRoute = StudioIndexRouteImport.update({
+  id: '/studio/',
+  path: '/studio/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StudioInsightsIndexRoute = StudioInsightsIndexRouteImport.update({
+  id: '/studio/insights/',
+  path: '/studio/insights/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StudioInsightsIdRoute = StudioInsightsIdRouteImport.update({
+  id: '/studio/insights/$id',
+  path: '/studio/insights/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StudioSubmitIndexRoute = StudioSubmitIndexRouteImport.update({
+  id: '/studio/submit/',
+  path: '/studio/submit/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StudioSubmitIdCheckRoute = StudioSubmitIdCheckRouteImport.update({
+  id: '/studio/submit/$id/check',
+  path: '/studio/submit/$id/check',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StudioSubmitIdResultRoute = StudioSubmitIdResultRouteImport.update({
+  id: '/studio/submit/$id/result',
+  path: '/studio/submit/$id/result',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/insights/$id': typeof InsightsIdRoute
-  '/insights/': typeof InsightsIndexRoute
-  '/submit/': typeof SubmitIndexRoute
-  '/submit/$id/check': typeof SubmitIdCheckRoute
-  '/submit/$id/result': typeof SubmitIdResultRoute
+  '/cart': typeof CartRoute
+  '/community': typeof CommunityRoute
+  '/goals': typeof GoalsRoute
+  '/leaderboard': typeof LeaderboardRoute
+  '/library': typeof LibraryRoute
+  '/plan': typeof PlanRoute
+  '/profile': typeof ProfileRoute
+  '/search': typeof SearchRoute
+  '/family/$id': typeof FamilyIdRoute
+  '/games/$slug': typeof GamesSlugRoute
+  '/play/$slug': typeof PlaySlugRoute
+  '/students/$id': typeof StudentsIdRoute
+  '/studio/': typeof StudioIndexRoute
+  '/studio/insights/$id': typeof StudioInsightsIdRoute
+  '/studio/insights/': typeof StudioInsightsIndexRoute
+  '/studio/submit/': typeof StudioSubmitIndexRoute
+  '/studio/submit/$id/check': typeof StudioSubmitIdCheckRoute
+  '/studio/submit/$id/result': typeof StudioSubmitIdResultRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/insights/$id': typeof InsightsIdRoute
-  '/insights': typeof InsightsIndexRoute
-  '/submit': typeof SubmitIndexRoute
-  '/submit/$id/check': typeof SubmitIdCheckRoute
-  '/submit/$id/result': typeof SubmitIdResultRoute
+  '/cart': typeof CartRoute
+  '/community': typeof CommunityRoute
+  '/goals': typeof GoalsRoute
+  '/leaderboard': typeof LeaderboardRoute
+  '/library': typeof LibraryRoute
+  '/plan': typeof PlanRoute
+  '/profile': typeof ProfileRoute
+  '/search': typeof SearchRoute
+  '/family/$id': typeof FamilyIdRoute
+  '/games/$slug': typeof GamesSlugRoute
+  '/play/$slug': typeof PlaySlugRoute
+  '/students/$id': typeof StudentsIdRoute
+  '/studio': typeof StudioIndexRoute
+  '/studio/insights/$id': typeof StudioInsightsIdRoute
+  '/studio/insights': typeof StudioInsightsIndexRoute
+  '/studio/submit': typeof StudioSubmitIndexRoute
+  '/studio/submit/$id/check': typeof StudioSubmitIdCheckRoute
+  '/studio/submit/$id/result': typeof StudioSubmitIdResultRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/insights/$id': typeof InsightsIdRoute
-  '/insights/': typeof InsightsIndexRoute
-  '/submit/': typeof SubmitIndexRoute
-  '/submit/$id/check': typeof SubmitIdCheckRoute
-  '/submit/$id/result': typeof SubmitIdResultRoute
+  '/cart': typeof CartRoute
+  '/community': typeof CommunityRoute
+  '/goals': typeof GoalsRoute
+  '/leaderboard': typeof LeaderboardRoute
+  '/library': typeof LibraryRoute
+  '/plan': typeof PlanRoute
+  '/profile': typeof ProfileRoute
+  '/search': typeof SearchRoute
+  '/family/$id': typeof FamilyIdRoute
+  '/games/$slug': typeof GamesSlugRoute
+  '/play/$slug': typeof PlaySlugRoute
+  '/students/$id': typeof StudentsIdRoute
+  '/studio/': typeof StudioIndexRoute
+  '/studio/insights/$id': typeof StudioInsightsIdRoute
+  '/studio/insights/': typeof StudioInsightsIndexRoute
+  '/studio/submit/': typeof StudioSubmitIndexRoute
+  '/studio/submit/$id/check': typeof StudioSubmitIdCheckRoute
+  '/studio/submit/$id/result': typeof StudioSubmitIdResultRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/insights/$id'
-    | '/insights/'
-    | '/submit/'
-    | '/submit/$id/check'
-    | '/submit/$id/result'
+    | '/cart'
+    | '/community'
+    | '/goals'
+    | '/leaderboard'
+    | '/library'
+    | '/plan'
+    | '/profile'
+    | '/search'
+    | '/family/$id'
+    | '/games/$slug'
+    | '/play/$slug'
+    | '/students/$id'
+    | '/studio/'
+    | '/studio/insights/$id'
+    | '/studio/insights/'
+    | '/studio/submit/'
+    | '/studio/submit/$id/check'
+    | '/studio/submit/$id/result'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/insights/$id'
-    | '/insights'
-    | '/submit'
-    | '/submit/$id/check'
-    | '/submit/$id/result'
+    | '/cart'
+    | '/community'
+    | '/goals'
+    | '/leaderboard'
+    | '/library'
+    | '/plan'
+    | '/profile'
+    | '/search'
+    | '/family/$id'
+    | '/games/$slug'
+    | '/play/$slug'
+    | '/students/$id'
+    | '/studio'
+    | '/studio/insights/$id'
+    | '/studio/insights'
+    | '/studio/submit'
+    | '/studio/submit/$id/check'
+    | '/studio/submit/$id/result'
   id:
     | '__root__'
     | '/'
-    | '/insights/$id'
-    | '/insights/'
-    | '/submit/'
-    | '/submit/$id/check'
-    | '/submit/$id/result'
+    | '/cart'
+    | '/community'
+    | '/goals'
+    | '/leaderboard'
+    | '/library'
+    | '/plan'
+    | '/profile'
+    | '/search'
+    | '/family/$id'
+    | '/games/$slug'
+    | '/play/$slug'
+    | '/students/$id'
+    | '/studio/'
+    | '/studio/insights/$id'
+    | '/studio/insights/'
+    | '/studio/submit/'
+    | '/studio/submit/$id/check'
+    | '/studio/submit/$id/result'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  InsightsIdRoute: typeof InsightsIdRoute
-  InsightsIndexRoute: typeof InsightsIndexRoute
-  SubmitIndexRoute: typeof SubmitIndexRoute
-  SubmitIdCheckRoute: typeof SubmitIdCheckRoute
-  SubmitIdResultRoute: typeof SubmitIdResultRoute
+  CartRoute: typeof CartRoute
+  CommunityRoute: typeof CommunityRoute
+  GoalsRoute: typeof GoalsRoute
+  LeaderboardRoute: typeof LeaderboardRoute
+  LibraryRoute: typeof LibraryRoute
+  PlanRoute: typeof PlanRoute
+  ProfileRoute: typeof ProfileRoute
+  SearchRoute: typeof SearchRoute
+  FamilyIdRoute: typeof FamilyIdRoute
+  GamesSlugRoute: typeof GamesSlugRoute
+  PlaySlugRoute: typeof PlaySlugRoute
+  StudentsIdRoute: typeof StudentsIdRoute
+  StudioIndexRoute: typeof StudioIndexRoute
+  StudioInsightsIdRoute: typeof StudioInsightsIdRoute
+  StudioInsightsIndexRoute: typeof StudioInsightsIndexRoute
+  StudioSubmitIndexRoute: typeof StudioSubmitIndexRoute
+  StudioSubmitIdCheckRoute: typeof StudioSubmitIdCheckRoute
+  StudioSubmitIdResultRoute: typeof StudioSubmitIdResultRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -117,39 +286,130 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/insights/': {
-      id: '/insights/'
-      path: '/insights'
-      fullPath: '/insights/'
-      preLoaderRoute: typeof InsightsIndexRouteImport
+    '/cart': {
+      id: '/cart'
+      path: '/cart'
+      fullPath: '/cart'
+      preLoaderRoute: typeof CartRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/insights/$id': {
-      id: '/insights/$id'
-      path: '/insights/$id'
-      fullPath: '/insights/$id'
-      preLoaderRoute: typeof InsightsIdRouteImport
+    '/community': {
+      id: '/community'
+      path: '/community'
+      fullPath: '/community'
+      preLoaderRoute: typeof CommunityRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/submit/': {
-      id: '/submit/'
-      path: '/submit'
-      fullPath: '/submit/'
-      preLoaderRoute: typeof SubmitIndexRouteImport
+    '/goals': {
+      id: '/goals'
+      path: '/goals'
+      fullPath: '/goals'
+      preLoaderRoute: typeof GoalsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/submit/$id/check': {
-      id: '/submit/$id/check'
-      path: '/submit/$id/check'
-      fullPath: '/submit/$id/check'
-      preLoaderRoute: typeof SubmitIdCheckRouteImport
+    '/leaderboard': {
+      id: '/leaderboard'
+      path: '/leaderboard'
+      fullPath: '/leaderboard'
+      preLoaderRoute: typeof LeaderboardRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/submit/$id/result': {
-      id: '/submit/$id/result'
-      path: '/submit/$id/result'
-      fullPath: '/submit/$id/result'
-      preLoaderRoute: typeof SubmitIdResultRouteImport
+    '/library': {
+      id: '/library'
+      path: '/library'
+      fullPath: '/library'
+      preLoaderRoute: typeof LibraryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/plan': {
+      id: '/plan'
+      path: '/plan'
+      fullPath: '/plan'
+      preLoaderRoute: typeof PlanRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/family/$id': {
+      id: '/family/$id'
+      path: '/family/$id'
+      fullPath: '/family/$id'
+      preLoaderRoute: typeof FamilyIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/games/$slug': {
+      id: '/games/$slug'
+      path: '/games/$slug'
+      fullPath: '/games/$slug'
+      preLoaderRoute: typeof GamesSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/play/$slug': {
+      id: '/play/$slug'
+      path: '/play/$slug'
+      fullPath: '/play/$slug'
+      preLoaderRoute: typeof PlaySlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/students/$id': {
+      id: '/students/$id'
+      path: '/students/$id'
+      fullPath: '/students/$id'
+      preLoaderRoute: typeof StudentsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/studio/': {
+      id: '/studio/'
+      path: '/studio'
+      fullPath: '/studio/'
+      preLoaderRoute: typeof StudioIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/studio/insights/': {
+      id: '/studio/insights/'
+      path: '/studio/insights'
+      fullPath: '/studio/insights/'
+      preLoaderRoute: typeof StudioInsightsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/studio/insights/$id': {
+      id: '/studio/insights/$id'
+      path: '/studio/insights/$id'
+      fullPath: '/studio/insights/$id'
+      preLoaderRoute: typeof StudioInsightsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/studio/submit/': {
+      id: '/studio/submit/'
+      path: '/studio/submit'
+      fullPath: '/studio/submit/'
+      preLoaderRoute: typeof StudioSubmitIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/studio/submit/$id/check': {
+      id: '/studio/submit/$id/check'
+      path: '/studio/submit/$id/check'
+      fullPath: '/studio/submit/$id/check'
+      preLoaderRoute: typeof StudioSubmitIdCheckRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/studio/submit/$id/result': {
+      id: '/studio/submit/$id/result'
+      path: '/studio/submit/$id/result'
+      fullPath: '/studio/submit/$id/result'
+      preLoaderRoute: typeof StudioSubmitIdResultRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -157,11 +417,24 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  InsightsIdRoute: InsightsIdRoute,
-  InsightsIndexRoute: InsightsIndexRoute,
-  SubmitIndexRoute: SubmitIndexRoute,
-  SubmitIdCheckRoute: SubmitIdCheckRoute,
-  SubmitIdResultRoute: SubmitIdResultRoute,
+  CartRoute: CartRoute,
+  CommunityRoute: CommunityRoute,
+  GoalsRoute: GoalsRoute,
+  LeaderboardRoute: LeaderboardRoute,
+  LibraryRoute: LibraryRoute,
+  PlanRoute: PlanRoute,
+  ProfileRoute: ProfileRoute,
+  SearchRoute: SearchRoute,
+  FamilyIdRoute: FamilyIdRoute,
+  GamesSlugRoute: GamesSlugRoute,
+  PlaySlugRoute: PlaySlugRoute,
+  StudentsIdRoute: StudentsIdRoute,
+  StudioIndexRoute: StudioIndexRoute,
+  StudioInsightsIdRoute: StudioInsightsIdRoute,
+  StudioInsightsIndexRoute: StudioInsightsIndexRoute,
+  StudioSubmitIndexRoute: StudioSubmitIndexRoute,
+  StudioSubmitIdCheckRoute: StudioSubmitIdCheckRoute,
+  StudioSubmitIdResultRoute: StudioSubmitIdResultRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
