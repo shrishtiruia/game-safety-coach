@@ -1,6 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { Fragment, useEffect, useState, type ReactNode } from "react";
 import { ChevronRight, Menu, ShieldCheck, UserRound, X } from "lucide-react";
+import { Toaster } from "@/components/ui/sonner";
 import { cn } from "@/lib/utils";
 
 /**
@@ -25,6 +26,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       <TopNav />
       <div className="flex-1">{children}</div>
       <Footer />
+      <Toaster position="top-center" offset={88} />
     </div>
   );
 }

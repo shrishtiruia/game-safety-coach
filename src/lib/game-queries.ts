@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import type { Severity } from "@/lib/eval-config";
+import { SAMPLE_GAMES } from "@/lib/sample-games";
 
 export type Finding = {
   id: string;
@@ -13,14 +14,17 @@ export type Finding = {
   human_review: boolean;
 };
 
-/** All games, oldest first. */
+/** All games, oldest first, including the in-code sample games. */
 export function useGames() {
   return useQuery({
     queryKey: ["games"],
     queryFn: async () => {
       const { data, error } = await supabase.from("games").select("*").order("created_at");
       if (error) throw error;
-      return data;
+      const ids = new Set(data.map((g) => g.id));
+      return [...data, ...SAMPLE_GAMES.filter((g) => !ids.has(g.id))].sort((a, b) =>
+        a.created_at.localeCompare(b.created_at),
+      );
     },
   });
 }

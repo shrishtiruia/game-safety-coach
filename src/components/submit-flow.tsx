@@ -1,6 +1,7 @@
 import { Check } from "lucide-react";
 import { Fragment, type ReactNode } from "react";
 import { Container } from "@/components/app-shell";
+import { GameTile } from "@/components/game-tile";
 import { cn } from "@/lib/utils";
 
 const STEPS = ["Submit game", "Safety check", "Result"] as const;
@@ -10,11 +11,17 @@ export function SubmitFlow({
   step,
   title,
   sub,
+  game,
+  scene,
   children,
 }: {
   step: 1 | 2 | 3;
   title: ReactNode;
   sub?: ReactNode;
+  /** The game being checked; shows its tile beside the title. */
+  game?: { id: string; skill: string } | undefined;
+  /** Optional mascot moment, shown to the right of the title. */
+  scene?: ReactNode;
   children: ReactNode;
 }) {
   return (
@@ -59,9 +66,13 @@ export function SubmitFlow({
           );
         })}
       </ol>
-      <header className="mb-8">
-        <h1 className="text-3xl sm:text-4xl">{title}</h1>
-        {sub && <p className="mt-1 font-semibold text-muted-foreground">{sub}</p>}
+      <header className="mb-8 flex items-center gap-5">
+        {game && <GameTile game={game} size="md" />}
+        <div className="min-w-0">
+          <h1 className="text-3xl sm:text-4xl">{title}</h1>
+          {sub && <p className="mt-1 font-semibold text-muted-foreground">{sub}</p>}
+        </div>
+        {scene && <div className="ml-auto hidden shrink-0 md:block">{scene}</div>}
       </header>
       {children}
     </Container>

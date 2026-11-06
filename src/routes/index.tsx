@@ -3,7 +3,10 @@ import { useState } from "react";
 import { ChevronRight, Plus, Star } from "lucide-react";
 import { Container } from "@/components/app-shell";
 import { chunkyVariants } from "@/components/chunky";
+import { GameTile } from "@/components/game-tile";
 import { MakerStatusChip } from "@/components/maker-status";
+import { Pip } from "@/components/mascot";
+import { useFirstLiveCelebration } from "@/components/mascot/first-live-toast";
 import { useGames, useLatestResults, type LatestResult } from "@/lib/game-queries";
 import { makerStatus } from "@/lib/game-status";
 import { FORMAT_LABEL, SKILL_LABEL } from "@/lib/eval-config";
@@ -49,11 +52,35 @@ function MyGames() {
   const { data: games, isLoading } = useGames();
   const { data: results } = useLatestResults();
   const [filter, setFilter] = useState<FilterKey>("all");
+  const celebrating = useFirstLiveCelebration();
 
   const all = games ?? [];
   const count = (k: FilterKey) =>
     k === "all" ? all.length : all.filter((g) => makerStatus(g.status) === k).length;
   const visible = filter === "all" ? all : all.filter((g) => makerStatus(g.status) === filter);
+  // At most one Pip per screen: the first draft that needs fixing, unless the toast is up.
+  const pipDraftId = celebrating
+    ? undefined
+    : visible.find(
+        (g) => g.status === "needs_changes" && results?.[g.id]?.result === "needs_changes",
+      )?.id;
+
+  if (!isLoading && all.length === 0) {
+    return (
+      <Container className="py-12">
+        <h1 className="mb-10 text-3xl sm:text-4xl">My games</h1>
+        <div className="flex flex-col items-center py-10 text-center">
+          <Pip pose="waiting" size="lg" />
+          <p className="mb-6 mt-4 text-xl font-extrabold">
+            No games yet. Let's build your first one.
+          </p>
+          <Link to="/submit" className={chunkyVariants({ size: "lg" })}>
+            <Plus className="h-5 w-5" strokeWidth={3} /> Submit a game
+          </Link>
+        </div>
+      </Container>
+    );
+  }
 
   return (
     <Container className="py-12">
@@ -103,7 +130,7 @@ function MyGames() {
       <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {visible.map((g) => (
           <li key={g.id}>
-            <GameCard game={g} latest={results?.[g.id]} />
+            <GameCard game={g} latest={results?.[g.id]} withPip={g.id === pipDraftId} />
           </li>
         ))}
       </ul>
@@ -111,7 +138,15 @@ function MyGames() {
   );
 }
 
-function GameCard({ game: g, latest }: { game: Game; latest: LatestResult | undefined }) {
+function GameCard({
+  game: g,
+  latest,
+  withPip,
+}: {
+  game: Game;
+  latest: LatestResult | undefined;
+  withPip?: boolean;
+}) {
   const live = makerStatus(g.status) === "live";
   const insights = live ? getGameInsights(g.id) : null;
   const s = insights ? stats(insights) : null;
@@ -122,7 +157,10 @@ function GameCard({ game: g, latest }: { game: Game; latest: LatestResult | unde
 
   const body = (
     <>
-      <MakerStatusChip status={g.status} className="mb-4 self-start" />
+      <div className="mb-5 flex items-start justify-between gap-3">
+        <GameTile game={g} size="md" />
+        <MakerStatusChip status={g.status} />
+      </div>
       <h2 className="text-xl group-hover:text-info">{g.title}</h2>
       <p className="mb-6 text-sm font-bold text-muted-foreground">{meta}</p>
     </>
@@ -144,12 +182,14 @@ function GameCard({ game: g, latest }: { game: Game; latest: LatestResult | unde
                   {s.rating.toFixed(1)}
                 </dd>
               </div>
-              <div>
-                <dt className="text-xs font-extrabold uppercase tracking-wide text-muted-foreground">
-                  Completion
-                </dt>
-                <dd className="text-lg font-black">{s.completion}%</dd>
-              </div>
+              {insights && (
+                <div>
+                  <dt className="text-xs font-extrabold uppercase tracking-wide text-muted-foreground">
+                    Rank
+                  </dt>
+                  <dd className="text-lg font-black">#{insights.meta.rank.position}</dd>
+                </div>
+              )}
             </dl>
           ) : (
             <p className="text-sm font-bold text-muted-foreground">No reviews yet</p>
@@ -172,15 +212,16 @@ function GameCard({ game: g, latest }: { game: Game; latest: LatestResult | unde
   return (
     <Link to="/submit/$id/result" params={{ id: g.id }} className={cardCls}>
       {body}
-      <div className="mt-auto flex items-end justify-between gap-4">
-        <p
-          className={cn(
-            "text-sm font-extrabold",
-            needsChanges ? "text-danger" : "text-muted-foreground",
-          )}
-        >
-          {line}
-        </p>
+      <p
+        className={cn(
+          "mt-auto text-sm font-extrabold",
+          needsChanges ? "text-danger" : "text-muted-foreground",
+        )}
+      >
+        {line}
+      </p>
+      <div className="mt-2 flex h-12 items-center justify-end gap-2">
+        {withPip && <Pip pose="idle" accessory="clipboard" size="sm" />}
         <span className="inline-flex shrink-0 items-center gap-1 font-extrabold text-info">
           {needsChanges ? "Continue fixing" : "Run safety check"}
           <ChevronRight className="h-4 w-4" strokeWidth={3} />

@@ -1,5 +1,4 @@
 import { useServerFn } from "@tanstack/react-start";
-import { Link } from "@tanstack/react-router";
 import { useState, type ReactNode } from "react";
 import {
   BadgeCheck,
@@ -11,11 +10,16 @@ import {
   Smile,
   Star,
   TrendingDown,
+  TrendingUp,
 } from "lucide-react";
 import { ChunkyButton } from "@/components/chunky";
+import { Dam, Pip } from "@/components/mascot";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import type {
   DidItWork,
+  GameMeta,
   InsightAction,
+  InsightRequest,
   InsightTheme,
   Review,
   Sentiment,
@@ -41,76 +45,37 @@ export function StatStrip({ stats }: { stats: { value: string; label: string; su
   );
 }
 
-export type LabeledAction = InsightAction & { gameTitle?: string };
-
-/** The star of the insights pages: numbered improvement cards on a soft green panel. */
-export function ImprovementsPanel({
-  title,
-  sub,
-  actions,
-  action,
+/** Game-level Top 3: the main section. Each card says what to do, why we think so, and why it matters. */
+export function TopImprovements({
+  gameId,
+  seeded,
+  requests,
+  onShowRequest,
 }: {
-  title: string;
-  sub: string;
-  actions: LabeledAction[];
-  action?: ReactNode;
+  gameId: string;
+  seeded: InsightAction[];
+  requests: InsightRequest[];
+  onShowRequest: (requestId: string) => void;
 }) {
-  return (
-    <section className="mb-12 rounded-3xl bg-primary-soft p-6 sm:p-8">
-      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h2 className="text-2xl">{title}</h2>
-          <p className="text-sm font-bold text-primary-pressed">{sub}</p>
-        </div>
-        {action}
-      </div>
-      <ol className="grid gap-4 md:grid-cols-3">
-        {actions.map((a, i) => (
-          <li key={a.id} className="flex flex-col rounded-3xl bg-background p-5">
-            <div className="mb-3 flex items-center gap-3">
-              <span
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary text-lg font-black text-primary-foreground"
-                aria-label={`Priority ${i + 1}`}
-              >
-                {i + 1}
-              </span>
-              {a.gameTitle && (
-                <Link
-                  to="/insights/$id"
-                  params={{ id: a.game_id }}
-                  className="truncate rounded text-sm font-extrabold text-muted-foreground hover:text-info hover:underline"
-                >
-                  {a.gameTitle}
-                </Link>
-              )}
-            </div>
-            <h3 className="mb-2 text-lg leading-snug">{a.title}</h3>
-            <p className="font-semibold text-muted-foreground">{a.evidence_summary}</p>
-          </li>
-        ))}
-      </ol>
-    </section>
-  );
-}
-
-/** Game-level Top 3 with the AI "Refresh insights" button (falls back to seeded actions). */
-export function GameImprovements({ gameId, seeded }: { gameId: string; seeded: InsightAction[] }) {
   const refresh = useServerFn(refreshInsights);
   const [actions, setActions] = useState(seeded);
   const [source, setSource] = useState<"seed" | "ai" | "fallback">("seed");
   const [busy, setBusy] = useState(false);
+  const shown = busy ? seeded : actions;
+
   return (
-    <ImprovementsPanel
-      title="Top 3 things to improve"
-      sub={
-        source === "ai"
-          ? "Fresh from your latest reviews and play data"
-          : source === "fallback"
-            ? "Couldn't refresh right now, showing your saved insights"
-            : "Based on teacher reviews and where students drop off"
-      }
-      actions={busy ? seeded : actions}
-      action={
+    <section className="mb-14 rounded-3xl bg-primary-soft p-6 sm:p-8">
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h2 className="text-2xl">Top 3 things to improve</h2>
+          <p className="text-sm font-bold text-primary-pressed">
+            {source === "ai"
+              ? "Fresh from your latest reviews and play data"
+              : source === "fallback"
+                ? "Couldn't refresh right now, showing your saved insights"
+                : "Based on teacher reviews and where students drop off"}
+          </p>
+        </div>
         <ChunkyButton
           variant="ghost"
           disabled={busy}
@@ -136,8 +101,128 @@ export function GameImprovements({ gameId, seeded }: { gameId: string; seeded: I
           )}
           Refresh insights
         </ChunkyButton>
-      }
-    />
+      </div>
+      <ol className="grid gap-4 md:grid-cols-3">
+        {shown.map((a, i) => {
+          const request = a.request_id ? requests.find((r) => r.id === a.request_id) : undefined;
+          return (
+            <li key={a.id} className="flex flex-col rounded-3xl bg-background p-5">
+              <span
+                className="mb-3 flex h-9 w-9 items-center justify-center rounded-full bg-primary text-lg font-black text-primary-foreground"
+                aria-label={`Priority ${i + 1}`}
+              >
+                {i + 1}
+              </span>
+              <h3 className="mb-2 text-lg leading-snug">{a.title}</h3>
+              <p className="mb-3 font-semibold text-muted-foreground">{a.evidence_summary}</p>
+              {a.why_it_matters && (
+                <p className="mt-auto border-t-2 border-secondary pt-3 text-sm font-semibold">
+                  <span className="font-extrabold">Why it matters: </span>
+                  {a.why_it_matters} <span className="text-muted-foreground">(estimate)</span>
+                </p>
+              )}
+              {request && (
+                <button
+                  type="button"
+                  onClick={() => onShowRequest(request.id)}
+                  className="mt-3 self-start rounded-lg text-sm font-extrabold text-info hover:underline"
+                >
+                  Requested by {request.request_count} teachers →
+                </button>
+              )}
+            </li>
+          );
+        })}
+      </ol>
+    </section>
+  );
+}
+
+/** Compact before/after for the game's last update, with Pip and a dam that fills once. */
+export function ImprovedCard({ update }: { update: NonNullable<GameMeta["pastUpdate"]> }) {
+  return (
+    <section className="mb-10 flex items-center gap-6 rounded-3xl border-2 border-secondary py-4 pl-6 pr-4">
+      <TrendingUp className="h-6 w-6 shrink-0 text-primary" strokeWidth={3} />
+      <div className="min-w-0 flex-1">
+        <h2 className="text-lg">You improved</h2>
+        <p className="font-semibold text-muted-foreground">
+          {update.title} on {update.date}: completion is{" "}
+          <span className="font-extrabold text-foreground">
+            {update.after.completion}% from {update.before.completion}%
+          </span>
+          , and you moved from{" "}
+          <span className="font-extrabold text-foreground">
+            #{update.before.rank} to #{update.after.rank}
+          </span>
+          .
+        </p>
+      </div>
+      <div aria-hidden className="hidden shrink-0 items-end md:flex">
+        <Dam
+          width={104}
+          level={{ from: update.before.completion, to: update.after.completion }}
+          className="-mr-2"
+        />
+        <Pip pose="proud" size={76} />
+      </div>
+    </section>
+  );
+}
+
+/** "How ranking works": a text link that opens a small popover. */
+export function RankingInfo() {
+  return (
+    <Popover>
+      <PopoverTrigger className="rounded text-sm font-extrabold text-info hover:underline">
+        How ranking works
+      </PopoverTrigger>
+      <PopoverContent align="start" className="w-80 rounded-2xl p-5 font-semibold">
+        <p className="mb-2 font-extrabold">
+          Games are ranked within their skill and grade band by:
+        </p>
+        <ul className="list-disc space-y-1 pl-5 text-sm">
+          <li>Teacher ratings</li>
+          <li>Did-it-work rate</li>
+          <li>Completion rate</li>
+          <li>How recently the game was updated</li>
+        </ul>
+        <p className="mt-3 text-xs text-muted-foreground">
+          Ranks shown here are sample data for now.
+        </p>
+      </PopoverContent>
+    </Popover>
+  );
+}
+
+export function RequestsList({
+  requests,
+  highlightId,
+}: {
+  requests: InsightRequest[];
+  highlightId?: string | null;
+}) {
+  const sorted = [...requests].sort((a, b) => b.request_count - a.request_count);
+  return (
+    <ul className="max-w-3xl divide-y-2 divide-secondary">
+      {sorted.map((r) => (
+        <li
+          key={r.id}
+          id={`request-${r.id}`}
+          className={cn(
+            "rounded-2xl px-3 py-5 transition-colors",
+            highlightId === r.id && "bg-info-soft",
+          )}
+        >
+          <div className="flex flex-wrap items-baseline justify-between gap-x-4">
+            <h3 className="text-lg">{r.title}</h3>
+            <p className="text-sm font-extrabold text-muted-foreground">
+              {r.request_count} teachers asked for this
+            </p>
+          </div>
+          <p className="mt-1 font-semibold text-muted-foreground">“{r.example_quote}”</p>
+        </li>
+      ))}
+    </ul>
   );
 }
 

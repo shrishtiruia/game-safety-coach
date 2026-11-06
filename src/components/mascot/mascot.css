@@ -1,0 +1,288 @@
+/*
+ * Pip the beaver + Dam: motion only uses transform and opacity.
+ * Every moving part sets transform-box: fill-box so its transform-origin
+ * is a point on the part itself (tail base, shoulder, neck).
+ * Base styles are the final pose; animations play *into* that pose, so with
+ * reduced motion everything simply shows the still pose.
+ */
+
+.pip,
+.dam {
+  overflow: visible;
+}
+
+/* ---------- Pip: pivots ---------- */
+.pip-tail {
+  transform-box: fill-box;
+  transform-origin: 4% 55%; /* where the paddle meets the body */
+}
+.pip-torso {
+  transform-box: fill-box;
+  transform-origin: 50% 100%; /* breathe from the feet up */
+}
+.pip-head {
+  transform-box: fill-box;
+  transform-origin: 50% 94%; /* neck */
+  transform: rotate(var(--pip-tilt, 0deg));
+  animation: pip-tilt-in 400ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.pip-eyes {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  animation: pip-blink 4s ease-in-out 1.2s infinite;
+}
+.pip-arm {
+  transform-box: fill-box;
+  transform-origin: 50% 17%; /* shoulder */
+}
+
+/* ---------- Pip: poses ---------- */
+.pip--idle .pip-torso,
+.pip--waiting .pip-torso {
+  animation: pip-breathe 3.2s ease-in-out infinite alternate;
+}
+.pip--idle .pip-tail {
+  animation: pip-wag 2.8s ease-in-out infinite alternate;
+}
+.pip--waiting .pip-tail {
+  animation: pip-swish 3.6s ease-in-out infinite alternate;
+}
+.pip--working .pip-root {
+  animation: pip-bob 1.4s ease-in-out infinite alternate;
+}
+.pip--celebrating .pip-root {
+  animation: pip-bounce 700ms ease-out 2 both;
+}
+.pip--celebrating .pip-arm {
+  animation: pip-cheer 700ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+.pip--proud .pip-torso {
+  transform: scale(1.03);
+  animation: pip-chest 500ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+.pip--oops .pip-arm-r {
+  animation: pip-scratch 340ms ease-in-out 300ms 3;
+}
+.pip--thinking .pip-glass {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  animation: pip-glass-in 350ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.pip-sweat {
+  transform-box: fill-box;
+  animation: pip-sweat 2.4s ease-in-out infinite;
+}
+.pip-stream-wave {
+  animation: pip-stream 4s ease-in-out infinite alternate;
+}
+.pip-confetti-piece {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  opacity: 0;
+  animation: pip-confetti 700ms cubic-bezier(0.2, 0.8, 0.2, 1) 120ms both;
+}
+
+@keyframes pip-tilt-in {
+  from {
+    transform: rotate(0deg);
+  }
+}
+@keyframes pip-blink {
+  0%,
+  94%,
+  100% {
+    transform: scaleY(1);
+  }
+  97% {
+    transform: scaleY(0.1);
+  }
+}
+@keyframes pip-breathe {
+  from {
+    transform: scale(1, 1);
+  }
+  to {
+    transform: scale(1.01, 1.025);
+  }
+}
+@keyframes pip-wag {
+  from {
+    transform: rotate(-4deg);
+  }
+  to {
+    transform: rotate(4deg);
+  }
+}
+@keyframes pip-swish {
+  from {
+    transform: rotate(-8deg);
+  }
+  to {
+    transform: rotate(6deg);
+  }
+}
+@keyframes pip-bob {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-2px);
+  }
+}
+@keyframes pip-bounce {
+  0% {
+    transform: translateY(0);
+  }
+  35% {
+    transform: translateY(-12px);
+  }
+  65% {
+    transform: translateY(0);
+  }
+  80% {
+    transform: translateY(-3px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+@keyframes pip-cheer {
+  from {
+    transform: rotate(var(--pip-cheer-from, 0deg));
+  }
+}
+@keyframes pip-chest {
+  from {
+    transform: scale(1);
+  }
+}
+@keyframes pip-scratch {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(-9deg);
+  }
+}
+@keyframes pip-glass-in {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+}
+@keyframes pip-sweat {
+  0% {
+    opacity: 0;
+    transform: translateY(-2px);
+  }
+  20%,
+  75% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+@keyframes pip-stream {
+  from {
+    transform: translateX(-6px);
+  }
+  to {
+    transform: translateX(6px);
+  }
+}
+@keyframes pip-confetti {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) rotate(0deg) scale(0.6);
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--dx), var(--dy)) rotate(var(--rot)) scale(1);
+  }
+}
+
+/* ---------- Dam ---------- */
+.dam-log {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+}
+.dam-log--placed {
+  animation: dam-log-in 400ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.dam-log--slot {
+  opacity: 0.55;
+}
+.dam-leak {
+  transform-box: fill-box;
+  animation: dam-drip 1.6s ease-in 300ms infinite;
+}
+.dam-water {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+}
+.dam--gauge .dam-water {
+  transform: scaleY(var(--dam-from, 1));
+}
+.dam--gauge.is-visible .dam-water {
+  animation: dam-rise 700ms cubic-bezier(0.2, 0.8, 0.2, 1) 150ms both;
+}
+
+@keyframes dam-log-in {
+  0% {
+    opacity: 0;
+    transform: translate(-28px, -6px);
+  }
+  70% {
+    opacity: 1;
+    transform: translate(2px, 0);
+  }
+  85% {
+    transform: translate(0, 1px) scaleY(0.94);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(0, 0) scaleY(1);
+  }
+}
+@keyframes dam-drip {
+  0% {
+    opacity: 0;
+    transform: translateY(-2px);
+  }
+  25% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+@keyframes dam-rise {
+  from {
+    transform: scaleY(var(--dam-from, 1));
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+/* ---------- Reduced motion: still poses, no loops, no confetti ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .pip *,
+  .dam * {
+    animation: none !important;
+  }
+  .pip-confetti {
+    display: none;
+  }
+  .dam--gauge .dam-water {
+    transform: none;
+  }
+}

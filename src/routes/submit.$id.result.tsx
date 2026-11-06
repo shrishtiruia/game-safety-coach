@@ -3,10 +3,11 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import type React from "react";
-import { ChevronDown, Loader2, PartyPopper, Sparkles, UserCheck, Wrench } from "lucide-react";
+import { ChevronDown, Loader2, UserCheck } from "lucide-react";
 import { CATEGORY_ICON, ChunkyButton, chunkyVariants, SEVERITY_CLS } from "@/components/chunky";
 import { MakerStatusChip } from "@/components/maker-status";
 import { SubmitFlow } from "@/components/submit-flow";
+import { Dam, Pip, SpeechBubble } from "@/components/mascot";
 import { useGameDetail, type Finding } from "@/lib/game-queries";
 import { isLive } from "@/lib/game-status";
 import { resubmitGame } from "@/lib/evaluation.functions";
@@ -45,6 +46,7 @@ function ResultStep() {
     return (
       <SubmitFlow
         step={2}
+        game={game}
         title={`${game.title} is ready for its safety check`}
         sub={
           ev
@@ -66,7 +68,6 @@ function ResultStep() {
   const live = isLive(result);
   const must = findings.filter((f) => f.severity === "must_fix").length;
   const humanCount = findings.filter((f) => f.human_review).length;
-  const Icon = result === "approved" ? PartyPopper : live ? Sparkles : Wrench;
 
   const title = live
     ? "You're live!"
@@ -77,22 +78,14 @@ function ResultStep() {
       : `Teachers can find ${game.title} now. Nothing to fix.`
     : "Fix them now and we'll only re-check what had notes. Or save to drafts and come back later.";
 
+  const scene = fixing ? undefined : <ResultScene result={result} />;
+
   return (
     <SubmitFlow
       step={3}
-      title={
-        <span className="flex items-center gap-3">
-          <span
-            className={cn(
-              "flex h-12 w-12 shrink-0 animate-pop items-center justify-center rounded-full text-primary-foreground",
-              live ? "bg-primary" : "bg-danger",
-            )}
-          >
-            <Icon className="h-6 w-6" strokeWidth={2.5} />
-          </span>
-          {fixing ? `Fix ${game.title}` : title}
-        </span>
-      }
+      game={game}
+      scene={scene}
+      title={fixing ? `Fix ${game.title}` : title}
       sub={fixing ? "Make your fixes, then send it back for a quick re-check." : sub}
     >
       <div className="mb-8 flex flex-wrap items-center gap-3 text-sm font-bold text-muted-foreground">
@@ -132,6 +125,32 @@ function ResultStep() {
         </>
       )}
     </SubmitFlow>
+  );
+}
+
+/** Pip's reaction to the result. Kept in the header, never beside the findings themselves. */
+function ResultScene({ result }: { result: string }) {
+  if (result === "approved") {
+    return (
+      <div aria-hidden className="flex items-end">
+        <Dam width={130} className="-mr-3" />
+        <Pip pose="celebrating" size={120} />
+      </div>
+    );
+  }
+  if (result === "approved_with_notes") {
+    return (
+      <div aria-hidden className="flex items-center gap-1">
+        <SpeechBubble pointer="right">You're live! A few ideas inside.</SpeechBubble>
+        <Pip pose="proud" size={120} />
+      </div>
+    );
+  }
+  return (
+    <div aria-hidden className="flex items-center gap-1">
+      <SpeechBubble pointer="right">Almost there.</SpeechBubble>
+      <Pip pose="oops" hardHat size={120} />
+    </div>
   );
 }
 

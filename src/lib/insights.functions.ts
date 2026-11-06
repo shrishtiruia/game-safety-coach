@@ -5,6 +5,7 @@ import {
   outcomesByGrade,
   stats,
   type InsightAction,
+  type InsightRequest,
 } from "./insights-data";
 
 function withTimeout<T>(p: Promise<T>, ms: number): Promise<T> {
@@ -14,20 +15,26 @@ function withTimeout<T>(p: Promise<T>, ms: number): Promise<T> {
   ]);
 }
 
-function cleanActions(raw: unknown, gameId: string): InsightAction[] {
+function cleanActions(raw: unknown, gameId: string, requests: InsightRequest[]): InsightAction[] {
   const list = (raw as { actions?: unknown[] })?.actions;
   if (!Array.isArray(list)) return [];
   return list
     .map((a) => a as Record<string, unknown>)
     .filter((a) => typeof a["title"] === "string" && typeof a["evidence_summary"] === "string")
     .slice(0, 3)
-    .map((a, i) => ({
-      id: `ai-${i + 1}`,
-      game_id: gameId,
-      title: String(a["title"]).trim(),
-      evidence_summary: String(a["evidence_summary"]).trim(),
-      priority: (i + 1) as 1 | 2 | 3,
-    }));
+    .map((a, i) => {
+      const requestTitle = typeof a["request_title"] === "string" ? a["request_title"] : "";
+      const request = requests.find((r) => r.title === requestTitle);
+      return {
+        id: `ai-${i + 1}`,
+        game_id: gameId,
+        title: String(a["title"]).trim(),
+        evidence_summary: String(a["evidence_summary"]).trim(),
+        why_it_matters: String(a["why_it_matters"] ?? "").trim(),
+        priority: (i + 1) as 1 | 2 | 3,
+        ...(request ? { request_id: request.id } : {}),
+      };
+    });
 }
 
 /** Top 3 improvements from review themes and funnel data; falls back to the seeded actions. */
@@ -50,6 +57,10 @@ export const refreshInsights = createServerFn({ method: "POST" })
       `Review themes: ${insights.themes
         .map((t) => `"${t.theme}" (${t.sentiment}, ${t.mention_count} mentions)`)
         .join("; ")}.`,
+      `Teacher requests: ${insights.requests
+        .map((r) => `"${r.title}" (${r.request_count} teachers)`)
+        .join("; ")}.`,
+      `Current rank: #${insights.meta.rank.position} in ${insights.meta.rank.category}. Ranking factors: teacher ratings, did-it-work rate, completion rate, how recently the game was updated.`,
     ].join("\n");
 
     try {
@@ -60,7 +71,7 @@ export const refreshInsights = createServerFn({ method: "POST" })
           messages: [
             {
               role: "system",
-              content: `You coach makers of classroom soft-skills games. From the data, pick the 3 most valuable improvements, most important first. Return JSON {"actions":[{"title","evidence_summary"}]}. title: a short imperative action (under 60 characters). evidence_summary: one sentence citing specific numbers from the data (for example "11 of 24 teachers said Level 3 runs too long"). Only use numbers that appear in the data.`,
+              content: `You coach makers of classroom soft-skills games. From the data, pick the 3 most valuable improvements, most important first. Return JSON {"actions":[{"title","evidence_summary","why_it_matters","request_title"}]}. title: a short imperative action (under 60 characters). evidence_summary: one sentence citing specific numbers from the data (for example "11 of 24 teachers said Level 3 runs too long"). why_it_matters: one sentence naming the ranking factor it affects and an estimated effect (for example "Completion rate affects ranking. Estimated to move you up 1-2 spots."). request_title: the exact title of a matching teacher request, or "" if none. Only use numbers that appear in the data.`,
             },
             { role: "user", content: summary },
           ],
@@ -70,7 +81,7 @@ export const refreshInsights = createServerFn({ method: "POST" })
       );
       const content = res.choices?.[0]?.message?.content;
       if (typeof content !== "string") return fallback;
-      const actions = cleanActions(JSON.parse(content), data.gameId);
+      const actions = cleanActions(JSON.parse(content), data.gameId, insights.requests);
       return actions.length === 3 ? { actions, source: "ai" as const } : fallback;
     } catch (e) {
       console.error("refreshInsights fell back to seeded actions", e);
