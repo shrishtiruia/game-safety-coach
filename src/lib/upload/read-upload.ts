@@ -27,6 +27,8 @@ export type ParsedUpload = {
   digest: string;
   /** Deterministic findings from the rules scan, with file:line evidence. */
   rules: RuleFinding[];
+  /** The game's own address if its HTML declares one (canonical link, og:url, or base href). */
+  urlHint: string | null;
 };
 
 export class UploadError extends Error {}
@@ -72,7 +74,27 @@ export async function readUpload(file: File): Promise<ParsedUpload> {
     sha256,
     digest: extractDigest(files),
     rules: scanFiles(files),
+    urlHint: findUrlHint(files),
   };
+}
+
+/** Only reads tag attributes as text; https/http addresses only. */
+function findUrlHint(files: TextFile[]): string | null {
+  const patterns = [
+    /<link[^>]*rel=["']canonical["'][^>]*href=["'](https?:\/\/[^"']+)["']/i,
+    /<link[^>]*href=["'](https?:\/\/[^"']+)["'][^>]*rel=["']canonical["']/i,
+    /<meta[^>]*property=["']og:url["'][^>]*content=["'](https?:\/\/[^"']+)["']/i,
+    /<meta[^>]*content=["'](https?:\/\/[^"']+)["'][^>]*property=["']og:url["']/i,
+    /<base[^>]*href=["'](https?:\/\/[^"']+)["']/i,
+  ];
+  for (const f of files) {
+    if (!/\.html?$/i.test(f.path)) continue;
+    for (const re of patterns) {
+      const m = f.text.match(re);
+      if (m?.[1]) return m[1];
+    }
+  }
+  return null;
 }
 
 async function fingerprint(buffer: ArrayBuffer) {

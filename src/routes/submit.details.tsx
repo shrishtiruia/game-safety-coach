@@ -3,11 +3,20 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
 import type React from "react";
-import { Loader2, Sparkles } from "lucide-react";
+import { Loader2, Shuffle, Sparkles } from "lucide-react";
 import { ChunkyButton, chunkyVariants } from "@/components/chunky";
+import { GameTile } from "@/components/game-tile";
 import { SubmitFlow } from "@/components/submit-flow";
+import {
+  autoCover,
+  SKILL_COLOR,
+  SKILL_ICONS,
+  COVER_ICONS,
+  isCoverIcon,
+  type Cover,
+} from "@/lib/game-covers";
 import { FORMAT_LABEL, SKILL_LABEL } from "@/lib/eval-config";
-import { createGame, GRADE_BANDS, suggestDetails } from "@/lib/submit.functions";
+import { createGame, GRADE_BANDS, suggestDetails, type DetailSuggestions } from "@/lib/submit.functions";
 import { attachUpload, getPendingUpload } from "@/lib/upload/session-upload";
 import { cn } from "@/lib/utils";
 
@@ -55,6 +64,11 @@ function DetailsStep() {
     hostedUrl: "",
   });
   const [suggested, setSuggested] = useState<Set<Field>>(new Set());
+  // Thumbnail: an icon picked from the file (or tried by the maker), colored by skill.
+  const [coverIcon, setCoverIcon] = useState<string | null>(null);
+  const [coverSuggested, setCoverSuggested] = useState(false);
+  // Hosted at: filled in automatically until the maker edits it.
+  const [urlEdited, setUrlEdited] = useState(false);
   const [suggesting, setSuggesting] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -64,13 +78,18 @@ function DetailsStep() {
     if (!upload) return;
     let cancelled = false;
     suggest({ data: { content: upload.digest, fileName: upload.fileName } })
-      .catch(() => ({}))
+      .catch((): DetailSuggestions => ({}))
       .then((s) => {
         if (cancelled) return;
         const filled = new Set<Field>();
         setForm((f) => {
           const next = { ...f };
-          for (const [k, v] of Object.entries(s) as [Field, string | number][]) {
+          const { coverIcon: icon, ...fields } = s;
+          if (isCoverIcon(icon)) {
+            setCoverIcon(icon);
+            setCoverSuggested(true);
+          }
+          for (const [k, v] of Object.entries(fields) as [Field, string | number][]) {
             if (v !== undefined && v !== "" && next[k] === "") {
               (next as Record<Field, string | number>)[k] = v;
               filled.add(k);
@@ -110,6 +129,26 @@ function DetailsStep() {
   };
   const hint = (k: Field) => suggested.has(k) && <SuggestedTag />;
 
+  const cover: Cover = isCoverIcon(coverIcon)
+    ? { cover_icon: coverIcon, cover_color: SKILL_COLOR[form.skill] ?? "green" }
+    : autoCover(form.skill, form.title || upload.fileName);
+  const tryAnotherCover = () => {
+    const pool = [
+      ...(SKILL_ICONS[form.skill] ?? []),
+      ...COVER_ICONS.filter((i) => !(SKILL_ICONS[form.skill] ?? []).includes(i)),
+    ];
+    const next = pool[(pool.indexOf(cover.cover_icon) + 1) % pool.length] ?? "lightbulb";
+    setCoverIcon(next);
+    setCoverSuggested(false);
+  };
+
+  const slug = form.title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+  const autoUrl = upload.urlHint ?? (slug ? `https://play.skillplay.example/${slug}` : "");
+  const hostedUrl = urlEdited ? form.hostedUrl : autoUrl;
+
   return (
     <SubmitFlow
       step={2}
@@ -137,7 +176,13 @@ function DetailsStep() {
           setError(null);
           try {
             const { id } = await create({
-              data: { ...form, durationMinutes: Number(form.durationMinutes) },
+              data: {
+                ...form,
+                hostedUrl,
+                durationMinutes: Number(form.durationMinutes),
+                coverIcon: cover.cover_icon,
+                coverColor: cover.cover_color,
+              },
             });
             attachUpload(id, upload);
             await qc.invalidateQueries();
@@ -149,6 +194,26 @@ function DetailsStep() {
           }
         }}
       >
+        <div className="flex items-center gap-5">
+          <GameTile cover={cover} size="lg" />
+          <div className="min-w-0">
+            <p className="text-sm font-extrabold">
+              Thumbnail
+              {coverSuggested && <SuggestedTag />}
+            </p>
+            <p className="mb-2 text-sm font-semibold text-muted-foreground">
+              Made from your game, in the same style as every SkillPlay game. The color follows the
+              skill.
+            </p>
+            <button
+              type="button"
+              onClick={tryAnotherCover}
+              className="inline-flex items-center gap-1.5 rounded-xl px-2 py-1 text-sm font-extrabold text-info hover:bg-info-soft"
+            >
+              <Shuffle className="h-4 w-4" strokeWidth={2.5} /> Try another
+            </button>
+          </div>
+        </div>
         <div className="grid gap-6 sm:grid-cols-2">
           <Field label="Game title" htmlFor="title" tag={hint("title")}>
             <input
@@ -246,6 +311,15 @@ function DetailsStep() {
         <Field
           label="Hosted at"
           htmlFor="hosted"
+          tag={
+            !urlEdited &&
+            autoUrl && (
+              <span className="ml-2 inline-flex items-center gap-1 text-xs font-bold text-info">
+                <Sparkles className="h-3 w-3" strokeWidth={3} />
+                {upload.urlHint ? "Found in your file" : "Suggested from your title"}
+              </span>
+            )
+          }
           hint="The link where teachers will play your game. Needed to go live."
         >
           <input
@@ -253,8 +327,11 @@ function DetailsStep() {
             type="url"
             required
             placeholder="https://"
-            value={form.hostedUrl}
-            onChange={(e) => set("hostedUrl", e.target.value)}
+            value={hostedUrl}
+            onChange={(e) => {
+              setUrlEdited(true);
+              set("hostedUrl", e.target.value);
+            }}
             className={fieldCls}
           />
         </Field>

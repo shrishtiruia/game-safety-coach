@@ -37,7 +37,17 @@ describe("sample game uploads", () => {
   it("never keeps the raw file: the parsed result has no bytes or full file text", async () => {
     const u = await readUpload(sample("comeback-kings.zip"));
     expect(Object.keys(u).sort()).toEqual(
-      ["digest", "fileCount", "fileName", "kind", "rules", "sha256", "size", "topLevel"].sort(),
+      [
+        "digest",
+        "fileCount",
+        "fileName",
+        "kind",
+        "rules",
+        "sha256",
+        "size",
+        "topLevel",
+        "urlHint",
+      ].sort(),
     );
   });
 });

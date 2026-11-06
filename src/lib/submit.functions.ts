@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { FORMAT_LABEL, SKILL_LABEL } from "./eval-config";
+import { COVER_ICON_HINTS, isCoverColor, isCoverIcon } from "./game-covers";
 
 export type NewGame = {
   title: string;
@@ -10,6 +11,8 @@ export type NewGame = {
   format: string;
   description: string;
   hostedUrl: string;
+  coverIcon: string;
+  coverColor: string;
 };
 
 export const GRADE_BANDS = ["3-5", "6-8", "9-12"] as const;
@@ -50,6 +53,7 @@ export const createGame = createServerFn({ method: "POST" })
     const hostedUrl = d.hostedUrl.trim().slice(0, 500);
     if (!title || !makerName || !description) throw new Error("Please fill in every field");
     if (!isHttpUrl(hostedUrl)) throw new Error("Please add the link where your game is hosted");
+    if (!isCoverIcon(d.coverIcon) || !isCoverColor(d.coverColor)) throw new Error("Unknown cover");
     if (!(d.skill in SKILL_LABEL)) throw new Error("Unknown skill");
     if (!(d.format in FORMAT_LABEL)) throw new Error("Unknown format");
     if (!(GRADE_BANDS as readonly string[]).includes(d.gradeBand))
@@ -80,7 +84,9 @@ export const createGame = createServerFn({ method: "POST" })
       .select("id")
       .single();
     if (error || !game) throw new Error("Could not save your game");
+    // Saved separately so one missing column doesn't block the other.
     await saveExtraColumns(game.id, { hosted_url: data.hostedUrl });
+    await saveExtraColumns(game.id, { cover_icon: data.coverIcon, cover_color: data.coverColor });
     return { id: game.id };
   });
 
@@ -105,6 +111,7 @@ export type DetailSuggestions = Partial<{
   gradeBand: string;
   format: string;
   durationMinutes: number;
+  coverIcon: string;
 }>;
 
 /** Suggests Details fields from the text extracted in the browser. Returns {} if the AI call fails. */
@@ -122,7 +129,11 @@ export const suggestDetails = createServerFn({ method: "POST" })
           messages: [
             {
               role: "system",
-              content: `You read the text of a classroom soft-skills web game and suggest its listing details. Return JSON {"title","description","skill","grade_band","format","duration_minutes"}. description: one or two plain sentences on how it plays. skill: one of ${Object.keys(SKILL_LABEL).join(" | ")}. grade_band: one of ${GRADE_BANDS.join(" | ")}. format: one of ${Object.keys(FORMAT_LABEL).join(" | ")}. duration_minutes: a whole number. Use "" for anything you can't tell.`,
+              content: `You read the text of a classroom soft-skills web game and suggest its listing details. Return JSON {"title","description","skill","grade_band","format","duration_minutes","cover_icon"}. description: one or two plain sentences on how it plays. skill: one of ${Object.keys(SKILL_LABEL).join(" | ")}. grade_band: one of ${GRADE_BANDS.join(" | ")}. format: one of ${Object.keys(FORMAT_LABEL).join(" | ")}. duration_minutes: a whole number. cover_icon: the thumbnail icon that best fits the game, one of: ${Object.entries(
+                COVER_ICON_HINTS,
+              )
+                .map(([k, v]) => `${k} (${v})`)
+                .join(", ")}. Use "" for anything you can't tell.`,
             },
             { role: "user", content: `File: ${data.fileName}\n${data.content}` },
           ],
@@ -141,6 +152,7 @@ export const suggestDetails = createServerFn({ method: "POST" })
       if (str(raw["format"]) in FORMAT_LABEL) out.format = str(raw["format"]);
       const mins = Math.round(Number(raw["duration_minutes"]));
       if (mins > 0 && mins <= 180) out.durationMinutes = mins;
+      if (isCoverIcon(raw["cover_icon"])) out.coverIcon = raw["cover_icon"];
       return out;
     } catch (e) {
       console.error("suggestDetails failed; leaving fields empty", e);
