@@ -14,7 +14,136 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      evaluations: {
+        Row: {
+          attempt_number: number
+          categories_run: string[]
+          created_at: string
+          game_id: string
+          id: string
+          overall_result: string | null
+          status: string
+        }
+        Insert: {
+          attempt_number?: number
+          categories_run?: string[]
+          created_at?: string
+          game_id: string
+          id?: string
+          overall_result?: string | null
+          status?: string
+        }
+        Update: {
+          attempt_number?: number
+          categories_run?: string[]
+          created_at?: string
+          game_id?: string
+          id?: string
+          overall_result?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "evaluations_game_id_fkey"
+            columns: ["game_id"]
+            isOneToOne: false
+            referencedRelation: "games"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      findings: {
+        Row: {
+          category: string
+          confidence: number
+          created_at: string
+          evaluation_id: string
+          evidence: string
+          human_review: boolean
+          id: string
+          resolved: boolean
+          severity: string
+          suggested_fix: string
+          title: string
+          why_it_matters: string
+        }
+        Insert: {
+          category: string
+          confidence?: number
+          created_at?: string
+          evaluation_id: string
+          evidence: string
+          human_review?: boolean
+          id?: string
+          resolved?: boolean
+          severity: string
+          suggested_fix?: string
+          title: string
+          why_it_matters?: string
+        }
+        Update: {
+          category?: string
+          confidence?: number
+          created_at?: string
+          evaluation_id?: string
+          evidence?: string
+          human_review?: boolean
+          id?: string
+          resolved?: boolean
+          severity?: string
+          suggested_fix?: string
+          title?: string
+          why_it_matters?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "findings_evaluation_id_fkey"
+            columns: ["evaluation_id"]
+            isOneToOne: false
+            referencedRelation: "evaluations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      games: {
+        Row: {
+          created_at: string
+          description: string
+          duration_minutes: number
+          format: string
+          grade_band: string
+          id: string
+          maker_name: string
+          skill: string
+          status: string
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string
+          duration_minutes: number
+          format: string
+          grade_band?: string
+          id?: string
+          maker_name: string
+          skill: string
+          status?: string
+          title: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          duration_minutes?: number
+          format?: string
+          grade_band?: string
+          id?: string
+          maker_name?: string
+          skill?: string
+          status?: string
+          title?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
