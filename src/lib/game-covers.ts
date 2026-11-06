@@ -1,25 +1,77 @@
 /**
- * Cover art for each game: a friendly icon on a solid color.
- * Shaped like the planned games.cover_icon / games.cover_color columns;
- * kept in code until those columns exist in the database.
+ * Game thumbnails: one friendly icon on one solid palette color, so every game
+ * looks like part of the same set. Shaped like games.cover_icon / games.cover_color.
+ * A game without saved cover columns gets a stable cover from its skill and title.
  */
-export type CoverIcon =
-  | "handshake"
-  | "microphone"
-  | "speech_bubbles"
-  | "stacked_blocks"
-  | "trophy"
-  | "heart_chat"
-  | "ear"
-  | "hourglass"
-  | "target"
-  | "sprout"
-  | "phone"
-  | "signpost"
-  | "smile";
-export type CoverColor = "orange" | "blue" | "green" | "yellow" | "red";
+export const COVER_ICONS = [
+  "handshake",
+  "scale",
+  "coins",
+  "store",
+  "microphone",
+  "megaphone",
+  "presentation",
+  "trophy",
+  "speech_bubbles",
+  "message_circle",
+  "ear",
+  "users",
+  "stacked_blocks",
+  "puzzle",
+  "rocket",
+  "heart_chat",
+  "heart_handshake",
+  "bird",
+  "lightbulb",
+] as const;
+export type CoverIcon = (typeof COVER_ICONS)[number];
+
+export const COVER_COLORS = ["orange", "blue", "green", "yellow", "red"] as const;
+export type CoverColor = (typeof COVER_COLORS)[number];
 export type Cover = { cover_icon: CoverIcon; cover_color: CoverColor };
 
+/** What each icon is for, so the AI can pick one that fits the game. */
+export const COVER_ICON_HINTS: Record<CoverIcon, string> = {
+  handshake: "making a deal, agreeing",
+  scale: "fairness, weighing options",
+  coins: "money, trading, budgets",
+  store: "shops, markets, buying and selling",
+  microphone: "speaking, performing, presenting aloud",
+  megaphone: "announcing, persuading a crowd",
+  presentation: "slides, giving a talk, explaining",
+  trophy: "competition, winning, challenges",
+  speech_bubbles: "back-and-forth conversation",
+  message_circle: "asking questions, chatting",
+  ear: "listening",
+  users: "groups, classmates, teams",
+  stacked_blocks: "building together",
+  puzzle: "solving problems together, fitting pieces",
+  rocket: "missions, adventure, launching projects",
+  heart_chat: "feelings, kind words",
+  heart_handshake: "making up, empathy, repairing relationships",
+  bird: "peace, calm, resolving conflict",
+  lightbulb: "ideas, reflection, learning",
+};
+
+/** Icons that fit each skill, used for the automatic cover and "Try another". */
+export const SKILL_ICONS: Record<string, CoverIcon[]> = {
+  negotiation: ["handshake", "store", "coins", "scale"],
+  public_speaking: ["microphone", "megaphone", "presentation", "trophy"],
+  conversation: ["speech_bubbles", "message_circle", "ear", "users"],
+  collaboration: ["stacked_blocks", "puzzle", "rocket", "users"],
+  conflict_resolution: ["heart_chat", "heart_handshake", "bird", "scale"],
+};
+
+/** One color per skill keeps the library consistent. */
+export const SKILL_COLOR: Record<string, CoverColor> = {
+  negotiation: "orange",
+  public_speaking: "blue",
+  conversation: "green",
+  collaboration: "yellow",
+  conflict_resolution: "red",
+};
+
+/** Seeded games whose covers were chosen by hand. */
 const BY_GAME: Record<string, Cover> = {
   "11111111-1111-1111-1111-111111111111": { cover_icon: "handshake", cover_color: "orange" }, // Haggle Hero
   "22222222-2222-2222-2222-222222222222": { cover_icon: "trophy", cover_color: "red" }, // Comeback Kings
@@ -29,30 +81,31 @@ const BY_GAME: Record<string, Cover> = {
   "66666666-6666-6666-6666-666666666666": { cover_icon: "stacked_blocks", cover_color: "yellow" }, // Team Up Tower
 };
 
-/**
- * New games without a cover yet get one from their skill. Covers both the
- * maker side's snake_case skills and the marketplace's skill names.
- */
-const BY_SKILL: Record<string, Cover> = {
-  negotiation: { cover_icon: "handshake", cover_color: "orange" },
-  public_speaking: { cover_icon: "microphone", cover_color: "blue" },
-  "public speaking": { cover_icon: "microphone", cover_color: "blue" },
-  conversation: { cover_icon: "speech_bubbles", cover_color: "green" },
-  "face-to-face conversation": { cover_icon: "speech_bubbles", cover_color: "green" },
-  collaboration: { cover_icon: "stacked_blocks", cover_color: "yellow" },
-  teamwork: { cover_icon: "stacked_blocks", cover_color: "yellow" },
-  conflict_resolution: { cover_icon: "heart_chat", cover_color: "green" },
-  "conflict resolution": { cover_icon: "heart_chat", cover_color: "green" },
-  empathy: { cover_icon: "heart_chat", cover_color: "red" },
-  "active listening": { cover_icon: "ear", cover_color: "blue" },
-  patience: { cover_icon: "hourglass", cover_color: "yellow" },
-  focus: { cover_icon: "target", cover_color: "red" },
-  "handling failure": { cover_icon: "sprout", cover_color: "green" },
-  "digital etiquette": { cover_icon: "phone", cover_color: "blue" },
-  "decision-making": { cover_icon: "signpost", cover_color: "orange" },
-  "self-awareness": { cover_icon: "smile", cover_color: "orange" },
-};
+export const isCoverIcon = (v: unknown): v is CoverIcon =>
+  typeof v === "string" && (COVER_ICONS as readonly string[]).includes(v);
+export const isCoverColor = (v: unknown): v is CoverColor =>
+  typeof v === "string" && (COVER_COLORS as readonly string[]).includes(v);
 
-export function getCover(game: { id: string; skill: string }): Cover {
-  return BY_GAME[game.id] ?? BY_SKILL[game.skill] ?? { cover_icon: "trophy", cover_color: "green" };
+/** A cover for a game that doesn't have one saved: same game, same cover, every time. */
+export function autoCover(skill: string, title: string): Cover {
+  const icons = SKILL_ICONS[skill] ?? ["lightbulb"];
+  let hash = 0;
+  for (const ch of title.trim().toLowerCase()) hash = (hash * 31 + ch.charCodeAt(0)) >>> 0;
+  return {
+    cover_icon: icons[hash % icons.length] ?? "lightbulb",
+    cover_color: SKILL_COLOR[skill] ?? "green",
+  };
+}
+
+export function getCover(game: {
+  id: string;
+  skill: string;
+  title?: string;
+  cover_icon?: unknown;
+  cover_color?: unknown;
+}): Cover {
+  if (isCoverIcon(game.cover_icon) && isCoverColor(game.cover_color)) {
+    return { cover_icon: game.cover_icon, cover_color: game.cover_color };
+  }
+  return BY_GAME[game.id] ?? autoCover(game.skill, game.title ?? game.id);
 }

@@ -8,6 +8,13 @@
       "when": 1793938743833,
       "tag": "0000_game_evaluation",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1793980685954,
+      "tag": "0001_add_game_hosting_and_cover_columns",
+      "breakpoints": true
     }
   ]
 }

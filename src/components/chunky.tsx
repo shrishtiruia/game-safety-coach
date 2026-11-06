@@ -54,8 +54,16 @@ export const CATEGORY_ICON: Record<Category, typeof Lock> = {
   learning_fit: Lightbulb,
 };
 
-const STATUS_STYLE: Record<string, { label: string; cls: string; Icon: typeof Lock }> = {
-  draft: { label: "Draft", cls: "bg-muted text-muted-foreground", Icon: Clock },
+type StatusStyle = { label: string; cls: string; Icon: typeof Lock };
+
+const DRAFT_STYLE: StatusStyle = {
+  label: "Draft",
+  cls: "bg-muted text-muted-foreground",
+  Icon: Clock,
+};
+
+const STATUS_STYLE: Record<string, StatusStyle> = {
+  draft: DRAFT_STYLE,
   submitted: { label: "Ready to check", cls: "bg-info-soft text-info", Icon: Send },
   in_review: { label: "Checking", cls: "bg-info-soft text-info", Icon: Loader2 },
   approved: { label: "Approved", cls: "bg-primary-soft text-primary-pressed", Icon: CheckCircle2 },
@@ -68,7 +76,7 @@ const STATUS_STYLE: Record<string, { label: string; cls: string; Icon: typeof Lo
 };
 
 export function StatusPill({ status }: { status: string }) {
-  const s = STATUS_STYLE[status] ?? STATUS_STYLE.draft;
+  const s = STATUS_STYLE[status] ?? DRAFT_STYLE;
   return (
     <span className={cn("inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-extrabold", s.cls)}>
       <s.Icon className="h-4 w-4" strokeWidth={3} />

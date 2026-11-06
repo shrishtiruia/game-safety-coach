@@ -26,6 +26,7 @@ import { Route as StudioIndexRouteImport } from './routes/studio.index'
 import { Route as StudioInsightsIndexRouteImport } from './routes/studio.insights.index'
 import { Route as StudioInsightsIdRouteImport } from './routes/studio.insights.$id'
 import { Route as StudioSubmitIndexRouteImport } from './routes/studio.submit.index'
+import { Route as StudioSubmitDetailsRouteImport } from './routes/studio.submit.details'
 import { Route as StudioSubmitIdCheckRouteImport } from './routes/studio.submit.$id.check'
 import { Route as StudioSubmitIdResultRouteImport } from './routes/studio.submit.$id.result'
 
@@ -114,6 +115,11 @@ const StudioSubmitIndexRoute = StudioSubmitIndexRouteImport.update({
   path: '/studio/submit/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const StudioSubmitDetailsRoute = StudioSubmitDetailsRouteImport.update({
+  id: '/studio/submit/details',
+  path: '/studio/submit/details',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const StudioSubmitIdCheckRoute = StudioSubmitIdCheckRouteImport.update({
   id: '/studio/submit/$id/check',
   path: '/studio/submit/$id/check',
@@ -141,6 +147,7 @@ export interface FileRoutesByFullPath {
   '/students/$id': typeof StudentsIdRoute
   '/studio/': typeof StudioIndexRoute
   '/studio/insights/$id': typeof StudioInsightsIdRoute
+  '/studio/submit/details': typeof StudioSubmitDetailsRoute
   '/studio/insights/': typeof StudioInsightsIndexRoute
   '/studio/submit/': typeof StudioSubmitIndexRoute
   '/studio/submit/$id/check': typeof StudioSubmitIdCheckRoute
@@ -162,6 +169,7 @@ export interface FileRoutesByTo {
   '/students/$id': typeof StudentsIdRoute
   '/studio': typeof StudioIndexRoute
   '/studio/insights/$id': typeof StudioInsightsIdRoute
+  '/studio/submit/details': typeof StudioSubmitDetailsRoute
   '/studio/insights': typeof StudioInsightsIndexRoute
   '/studio/submit': typeof StudioSubmitIndexRoute
   '/studio/submit/$id/check': typeof StudioSubmitIdCheckRoute
@@ -184,6 +192,7 @@ export interface FileRoutesById {
   '/students/$id': typeof StudentsIdRoute
   '/studio/': typeof StudioIndexRoute
   '/studio/insights/$id': typeof StudioInsightsIdRoute
+  '/studio/submit/details': typeof StudioSubmitDetailsRoute
   '/studio/insights/': typeof StudioInsightsIndexRoute
   '/studio/submit/': typeof StudioSubmitIndexRoute
   '/studio/submit/$id/check': typeof StudioSubmitIdCheckRoute
@@ -207,6 +216,7 @@ export interface FileRouteTypes {
     | '/students/$id'
     | '/studio/'
     | '/studio/insights/$id'
+    | '/studio/submit/details'
     | '/studio/insights/'
     | '/studio/submit/'
     | '/studio/submit/$id/check'
@@ -228,6 +238,7 @@ export interface FileRouteTypes {
     | '/students/$id'
     | '/studio'
     | '/studio/insights/$id'
+    | '/studio/submit/details'
     | '/studio/insights'
     | '/studio/submit'
     | '/studio/submit/$id/check'
@@ -249,6 +260,7 @@ export interface FileRouteTypes {
     | '/students/$id'
     | '/studio/'
     | '/studio/insights/$id'
+    | '/studio/submit/details'
     | '/studio/insights/'
     | '/studio/submit/'
     | '/studio/submit/$id/check'
@@ -271,6 +283,7 @@ export interface RootRouteChildren {
   StudentsIdRoute: typeof StudentsIdRoute
   StudioIndexRoute: typeof StudioIndexRoute
   StudioInsightsIdRoute: typeof StudioInsightsIdRoute
+  StudioSubmitDetailsRoute: typeof StudioSubmitDetailsRoute
   StudioInsightsIndexRoute: typeof StudioInsightsIndexRoute
   StudioSubmitIndexRoute: typeof StudioSubmitIndexRoute
   StudioSubmitIdCheckRoute: typeof StudioSubmitIdCheckRoute
@@ -398,6 +411,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StudioSubmitIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/studio/submit/details': {
+      id: '/studio/submit/details'
+      path: '/studio/submit/details'
+      fullPath: '/studio/submit/details'
+      preLoaderRoute: typeof StudioSubmitDetailsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/studio/submit/$id/check': {
       id: '/studio/submit/$id/check'
       path: '/studio/submit/$id/check'
@@ -431,6 +451,7 @@ const rootRouteChildren: RootRouteChildren = {
   StudentsIdRoute: StudentsIdRoute,
   StudioIndexRoute: StudioIndexRoute,
   StudioInsightsIdRoute: StudioInsightsIdRoute,
+  StudioSubmitDetailsRoute: StudioSubmitDetailsRoute,
   StudioInsightsIndexRoute: StudioInsightsIndexRoute,
   StudioSubmitIndexRoute: StudioSubmitIndexRoute,
   StudioSubmitIdCheckRoute: StudioSubmitIdCheckRoute,

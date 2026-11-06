@@ -15,6 +15,7 @@ import { chunkyVariants } from "@/components/chunky";
 import { Toaster } from "@/components/ui/sonner";
 import { emptyFilters } from "@/lib/catalog";
 import { useStore } from "@/lib/store";
+import { discardAllUploads } from "@/lib/upload/session-upload";
 import { cn } from "@/lib/utils";
 
 /**
@@ -37,6 +38,11 @@ export const NAV_ITEMS: StudioItem[] = [
 const isStudio = (path: string) => path === "/studio" || path.startsWith("/studio/");
 
 export function AppShell({ children }: { children: ReactNode }) {
+  const path = useRouterState({ select: (s) => s.location.pathname });
+  // Uploaded games live in memory only while the maker is in the submit flow.
+  useEffect(() => {
+    if (!path.startsWith("/studio/submit")) discardAllUploads();
+  }, [path]);
   return (
     <div className="flex min-h-screen flex-col">
       <TopNav />

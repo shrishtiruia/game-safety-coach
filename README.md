@@ -49,6 +49,19 @@ DESIGN (Duolingo-inspired)
 
 Build the maker submission list (showing the two seeded games and their statuses), the live evaluation screen, the result screen with findings, and the resubmit flow. Make it a working demo.
 
+## Demo: sample game uploads
+
+Two small single-page web games live in [`sample-games/`](sample-games) for demoing the upload flow (Submit a game → Upload → Details → Safety check → Result):
+
+| File | Game | What the safety check should find |
+| --- | --- | --- |
+| [`haggle-hero.zip`](sample-games/haggle-hero.zip) | Negotiation, grades 6-8, pairs, 15 min | Should fix: Level 3 merchant dialogue reads above 7th grade (`game.js`). Should fix: "Learn more" link leaves the game (`index.html`, found by the rules scan). Suggestion: pacing suggests 20 minutes, not 15. Result: **approved with notes (Live)**. |
+| [`comeback-kings.zip`](sample-games/comeback-kings.zip) | Public speaking, grades 6-8, whole class, 20 min | Must fix: roast cards 4 and 7 mock weight and appearance (`game.js`). Should fix: join screen asks for first name and school name (`index.html`, found by the rules scan). Suggestion: add a reflection step. Result: **needs changes (Draft)**. |
+
+To demo: open **Submit a game**, drop one of the zips, tick the permission box, check the suggested details, add a "Hosted at" link, and start the safety check. For Comeback Kings, use **Fix now and resubmit** and upload the file again to show that only the flagged categories are re-checked.
+
+Uploads are read in the browser only: files are never run, rendered, stored or uploaded. Only the extracted text and the rules-scan results are sent to the evaluation, and the app keeps just the game details, the findings, a SHA-256 fingerprint of the file and the review date.
+
 This project was built with [Lovable](https://lovable.dev).
 
 ## Build with Lovable

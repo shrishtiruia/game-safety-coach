@@ -7,6 +7,9 @@ import { ChevronDown, Loader2, UserCheck } from "lucide-react";
 import { CATEGORY_ICON, ChunkyButton, chunkyVariants, SEVERITY_CLS } from "@/components/chunky";
 import { MakerStatusChip } from "@/components/maker-status";
 import { SubmitFlow } from "@/components/submit-flow";
+import { GameDropzone } from "@/components/game-dropzone";
+import type { ParsedUpload } from "@/lib/upload/read-upload";
+import { attachUpload } from "@/lib/upload/session-upload";
 import { Dam, Pip, SpeechBubble } from "@/components/mascot";
 import { useGameDetail, type Finding } from "@/lib/game-queries";
 import { isLive } from "@/lib/game-status";
@@ -34,7 +37,7 @@ function ResultStep() {
 
   if (isLoading || !data) {
     return (
-      <SubmitFlow step={3} title="Loading…">
+      <SubmitFlow step={4} title="Loading…">
         {null}
       </SubmitFlow>
     );
@@ -45,7 +48,7 @@ function ResultStep() {
   if (!ev || game.status === "submitted" || game.status === "in_review") {
     return (
       <SubmitFlow
-        step={2}
+        step={3}
         game={game}
         title={`${game.title} is ready for its safety check`}
         sub={
@@ -82,7 +85,7 @@ function ResultStep() {
 
   return (
     <SubmitFlow
-      step={3}
+      step={4}
       game={game}
       scene={scene}
       title={fixing ? `Fix ${game.title}` : title}
@@ -284,7 +287,7 @@ function ResubmitForm({
   findings: Finding[];
   onCancel: () => void;
 }) {
-  const [desc, setDesc] = useState(game.description);
+  const [upload, setUpload] = useState<ParsedUpload | null>(null);
   const [dur, setDur] = useState(game.duration_minutes);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -323,17 +326,12 @@ function ResubmitForm({
             </ul>
           </Step>
         )}
-        <Step n={toFix.length > 0 ? 2 : 1} title="Update the game content">
-          <label htmlFor="resubmit-content" className="sr-only">
-            Game content
-          </label>
-          <textarea
-            id="resubmit-content"
-            value={desc}
-            onChange={(e) => setDesc(e.target.value)}
-            rows={9}
-            className="w-full rounded-2xl border-2 border-secondary bg-background p-3 font-semibold focus:border-info"
-          />
+        <Step n={toFix.length > 0 ? 2 : 1} title="Upload the fixed file">
+          <p className="mb-4 font-semibold text-muted-foreground">
+            We never keep a copy of your game, so upload the fixed version. We'll only re-check what
+            had notes.
+          </p>
+          <GameDropzone upload={upload} onChange={setUpload} />
         </Step>
         <Step n={toFix.length > 0 ? 3 : 2} title="Check the duration (minutes)">
           <label htmlFor="resubmit-duration" className="sr-only">
@@ -357,14 +355,16 @@ function ResubmitForm({
       <div className="mt-10 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
         <ChunkyButton
           size="lg"
-          disabled={busy}
+          disabled={busy || !upload}
           onClick={async () => {
+            if (!upload) return;
             setBusy(true);
             setError(null);
             try {
               await resubmit({
-                data: { gameId: game.id, description: desc, durationMinutes: dur },
+                data: { gameId: game.id, description: game.description, durationMinutes: dur },
               });
+              attachUpload(game.id, upload);
               await qc.invalidateQueries();
               navigate({ to: "/studio/submit/$id/check", params: { id: game.id } });
             } catch (e) {

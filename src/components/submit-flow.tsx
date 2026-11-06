@@ -4,9 +4,9 @@ import { Container } from "@/components/app-shell";
 import { GameTile } from "@/components/game-tile";
 import { cn } from "@/lib/utils";
 
-const STEPS = ["Upload game", "Safety check", "Result"] as const;
+const STEPS = ["Upload", "Details", "Safety check", "Result"] as const;
 
-/** Shared frame for the three submit steps: a stepper, a title, then the step's content. */
+/** Shared frame for the four submit steps: a stepper, a title, then the step's content. */
 export function SubmitFlow({
   step,
   title,
@@ -15,7 +15,7 @@ export function SubmitFlow({
   scene,
   children,
 }: {
-  step: 1 | 2 | 3;
+  step: 1 | 2 | 3 | 4;
   title: ReactNode;
   sub?: ReactNode;
   /** The game being checked; shows its tile beside the title. */

@@ -20,6 +20,11 @@ import { isLive } from "@/lib/game-status";
 import { FORMAT_LABEL, SKILL_LABEL } from "@/lib/eval-config";
 import { funnel, getGameInsights, outcomesByGrade, stats } from "@/lib/insights-data";
 import { cn } from "@/lib/utils";
+import { ExternalLink } from "lucide-react";
+
+/** hosted_url arrives with a Lovable migration; until then only sample games have one. */
+const hostedUrl = (g: object) =>
+  "hosted_url" in g && typeof g.hosted_url === "string" && g.hosted_url ? g.hosted_url : undefined;
 
 export const Route = createFileRoute("/studio/insights/$id")({
   head: () => ({
@@ -155,6 +160,16 @@ function Dashboard({
               </span>
             ))}
             <RankingInfo />
+            {hostedUrl(game) && (
+              <a
+                href={hostedUrl(game)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 rounded text-sm font-extrabold text-info hover:underline"
+              >
+                Play game <ExternalLink className="h-3.5 w-3.5" strokeWidth={3} />
+              </a>
+            )}
           </p>
         </div>
       </header>

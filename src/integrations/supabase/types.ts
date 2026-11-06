@@ -107,37 +107,52 @@ export type Database = {
       }
       games: {
         Row: {
+          cover_color: string | null
+          cover_icon: string | null
           created_at: string
           description: string
           duration_minutes: number
+          file_sha256: string | null
           format: string
           grade_band: string
+          hosted_url: string | null
           id: string
           maker_name: string
+          reviewed_at: string | null
           skill: string
           status: string
           title: string
         }
         Insert: {
+          cover_color?: string | null
+          cover_icon?: string | null
           created_at?: string
           description?: string
           duration_minutes: number
+          file_sha256?: string | null
           format: string
           grade_band?: string
+          hosted_url?: string | null
           id?: string
           maker_name: string
+          reviewed_at?: string | null
           skill: string
           status?: string
           title: string
         }
         Update: {
+          cover_color?: string | null
+          cover_icon?: string | null
           created_at?: string
           description?: string
           duration_minutes?: number
+          file_sha256?: string | null
           format?: string
           grade_band?: string
+          hosted_url?: string | null
           id?: string
           maker_name?: string
+          reviewed_at?: string | null
           skill?: string
           status?: string
           title?: string
