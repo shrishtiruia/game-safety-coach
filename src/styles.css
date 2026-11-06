@@ -92,6 +92,18 @@
   --sky: oklch(0.8 0.045 150); /* sage */
   --sky-edge: oklch(0.6 0.05 150);
   --sky-soft: oklch(0.945 0.02 120);
+  /* Marketplace names for the same colors, used directly in its SVG art. */
+  --honey: var(--info);
+  --honey-edge: var(--info-pressed);
+  --honey-soft: var(--info-soft);
+  --leaf: var(--primary);
+  --leaf-edge: var(--primary-pressed);
+  --leaf-soft: var(--primary-soft);
+  --berry: var(--danger);
+  --berry-edge: var(--danger-pressed);
+  --berry-soft: var(--danger-soft);
+  --star: var(--sun);
+  --cream: var(--muted);
   --secondary: oklch(0.91 0.01 80);
   --secondary-foreground: oklch(0.26 0.045 45);
   --muted: oklch(0.96 0.008 85);
