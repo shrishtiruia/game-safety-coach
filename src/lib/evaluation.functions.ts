@@ -92,15 +92,15 @@ function cleanFindings(raw: unknown): FindingInput[] {
   if (!Array.isArray(list)) return [];
   return list
     .map((f) => f as Record<string, unknown>)
-    .filter((f) => typeof f.evidence === "string" && f.evidence.trim().length > 0)
-    .filter((f) => SEVERITIES.includes(f.severity as Severity) && typeof f.title === "string")
+    .filter((f) => typeof f["evidence"] === "string" && f["evidence"].trim().length > 0)
+    .filter((f) => SEVERITIES.includes(f["severity"] as Severity) && typeof f["title"] === "string")
     .map((f) => ({
-      severity: f.severity as Severity,
-      title: String(f.title),
-      evidence: String(f.evidence),
-      why_it_matters: String(f.why_it_matters ?? ""),
-      suggested_fix: String(f.suggested_fix ?? ""),
-      confidence: Math.max(0, Math.min(1, Number(f.confidence ?? 0.5))),
+      severity: f["severity"] as Severity,
+      title: String(f["title"]),
+      evidence: String(f["evidence"]),
+      why_it_matters: String(f["why_it_matters"] ?? ""),
+      suggested_fix: String(f["suggested_fix"] ?? ""),
+      confidence: Math.max(0, Math.min(1, Number(f["confidence"] ?? 0.5))),
     }));
 }
 
