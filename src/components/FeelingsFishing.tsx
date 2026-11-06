@@ -184,7 +184,7 @@ export function FeelingsFishing({ slug }: { slug: string }) {
   }, [phase]);
 
   return (
-    <div className="mx-auto max-w-5xl space-y-5 px-4 py-6 md:px-8">
+    <div className="kb-kid mx-auto max-w-5xl space-y-5 px-4 py-6 md:px-8">
       <header className="flex flex-wrap items-center gap-4">
         <Link
           to="/games/$slug"
@@ -208,7 +208,7 @@ export function FeelingsFishing({ slug }: { slug: string }) {
             />
           ))}
         </div>
-        <span className="flex items-center gap-1 font-display text-lg font-extrabold text-honey">
+        <span className="flex items-center gap-1 text-lg font-extrabold text-honey">
           <Zap className="size-5" aria-hidden /> {xp} XP
         </span>
       </header>
@@ -258,7 +258,7 @@ export function FeelingsFishing({ slug }: { slug: string }) {
         <>
           <section
             aria-live="polite"
-            className="flex items-start gap-4 rounded-3xl bg-card p-5 md:p-6"
+            className="flex items-start gap-4 rounded-lg border bg-card p-5 md:p-6"
           >
             <Pip
               pose={phase === "catch" ? "search" : "wave"}
@@ -377,7 +377,7 @@ function Pond({
   return (
     <div
       className={cn(
-        "kb-pond relative h-[480px] overflow-hidden rounded-[2rem] bg-sky-soft md:h-[540px]",
+        "kb-pond relative h-[480px] overflow-hidden rounded-lg bg-sky-soft md:h-[540px]",
         landing && "kb-pond-still",
       )}
       role="group"
@@ -391,7 +391,7 @@ function Pond({
           onClick={() => onCatch(f)}
           aria-label={bilingual ? `${pack.feeling[f]} (${f}) fish` : `${f} fish`}
           className={cn(
-            "kb-fish absolute z-10 flex w-[136px] flex-col items-center gap-1 rounded-3xl p-1 focus-visible:[animation-play-state:paused] hover:[animation-play-state:paused] md:w-[156px]",
+            "kb-fish absolute z-10 flex w-[136px] flex-col items-center gap-1 rounded-lg p-1 focus-visible:[animation-play-state:paused] hover:[animation-play-state:paused] md:w-[156px]",
             reverse && "kb-fish-rev",
             hint === f && "kb-fish-hint",
           )}
@@ -410,7 +410,7 @@ function Pond({
             {landing === f && <Splash />}
           </span>
           <span className="flex flex-col items-center rounded-2xl bg-card px-3 py-0.5 leading-tight shadow-[0_3px_0_var(--sky-edge)]">
-            <span className="font-display text-base font-extrabold capitalize" lang={pack.speech}>
+            <span className="text-base font-extrabold capitalize" lang={pack.speech}>
               {pack.feeling[f]}
             </span>
             {bilingual && (
@@ -775,7 +775,7 @@ function TalkCard({
     ? pack.share(pack.feeling[feeling], partner)
     : pack.act(pack.feeling[feeling], partner);
   return (
-    <section className="grid items-center gap-6 rounded-[2rem] bg-leaf-soft p-6 md:grid-cols-[auto_1fr] md:p-8">
+    <section className="grid items-center gap-6 rounded-lg bg-leaf-soft p-6 md:grid-cols-[auto_1fr] md:p-8">
       <div className="kb-bob mx-auto">
         <FishArt feeling={feeling} big />
       </div>
@@ -831,20 +831,20 @@ function Finish({
   onRestart: () => void;
 }) {
   return (
-    <section className="flex flex-col items-center gap-4 rounded-[2rem] bg-card p-8 text-center md:p-12">
+    <section className="flex flex-col items-center gap-4 rounded-lg border bg-card p-8 text-center md:p-12">
       <Pip pose="trophy" className="size-40" bob />
       <h1 className="text-4xl">You caught every feeling!</h1>
       <p className="max-w-lg text-lg">
         You named 5 feelings, shared 5 stories and acted out 5 faces. That's real empathy practice.
       </p>
       <div className="flex flex-wrap justify-center gap-3">
-        <span className="rounded-full bg-honey-soft px-4 py-2 font-display text-lg font-extrabold">
+        <span className="rounded-full bg-honey-soft px-4 py-2 text-lg font-extrabold">
           +{xp} XP
         </span>
-        <span className="rounded-full bg-leaf-soft px-4 py-2 font-display text-lg font-extrabold">
+        <span className="rounded-full bg-leaf-soft px-4 py-2 text-lg font-extrabold">
           Empathy Explorer progress
         </span>
-        <span className="rounded-full bg-muted px-4 py-2 font-display text-lg font-extrabold">
+        <span className="rounded-full bg-muted px-4 py-2 text-lg font-extrabold">
           {misses === 0
             ? "No wrong catches"
             : `${misses} ${misses === 1 ? "try" : "tries"} to learn from`}

@@ -52,9 +52,11 @@ export const Route = createFileRoute("/family/$id")({
   ),
 });
 
-const card = "rounded-3xl bg-card p-5 md:p-6";
+const card = "rounded-lg border bg-card p-5 md:p-6";
 
 const SKILL_PLAIN: Record<TrackedSkill, string> = {
+  "self-awareness": "Knowing their own feelings and what helps",
+  "decision-making": "Thinking choices through before acting",
   empathy: "Noticing how other people feel",
   teamwork: "Working with classmates toward one goal",
   communication: "Listening, and saying what they think",
@@ -64,6 +66,18 @@ const SKILL_PLAIN: Record<TrackedSkill, string> = {
 };
 
 const AT_HOME: Record<TrackedSkill, { question: string; activity: string; notice: string }> = {
+  "self-awareness": {
+    question: "What was your biggest feeling today? Where did you feel it in your body?",
+    activity:
+      "Make a feelings check-in chart for the fridge. At dinner, each of you points to how you feel.",
+    notice: "When they name a feeling, thank them: “Thanks for telling me you're frustrated.”",
+  },
+  "decision-making": {
+    question: "What's one choice you made today? What else could you have done?",
+    activity:
+      "Play “what would you do?” with small everyday puzzles, like finding a dollar on the floor.",
+    notice: "When they stop and think before acting, say so: “You took a moment to decide. Nice.”",
+  },
   empathy: {
     question: "Who looked happy at school today? How could you tell?",
     activity:
@@ -132,7 +146,7 @@ function FamilyPage() {
         </Link>
       </p>
 
-      <header className="flex flex-col gap-5 rounded-[2rem] bg-leaf-soft p-6 sm:flex-row sm:items-center md:p-8">
+      <header className="flex flex-col gap-5 rounded-lg bg-leaf-soft p-6 sm:flex-row sm:items-center md:p-8">
         <span
           className="grid size-24 shrink-0 place-items-center rounded-full bg-card text-5xl"
           aria-hidden
@@ -190,7 +204,7 @@ function FamilyPage() {
                   <SkillIcon skill={k} />
                 </span>
                 <div>
-                  <p className="font-extrabold capitalize">{k}</p>
+                  <p className="font-extrabold inline-block first-letter:uppercase">{k}</p>
                   <p className="text-sm text-muted-foreground">{SKILL_PLAIN[k]}</p>
                 </div>
               </div>
@@ -201,7 +215,9 @@ function FamilyPage() {
                     style={{ width: `${s.skills[k]}%` }}
                   />
                 </span>
-                <span className="w-32 whitespace-nowrap text-sm font-bold">{level(s.skills[k])}</span>
+                <span className="w-32 whitespace-nowrap text-sm font-bold">
+                  {level(s.skills[k])}
+                </span>
               </div>
             </li>
           ))}
@@ -276,7 +292,7 @@ function Fact({ icon, value, label }: { icon: React.ReactNode; value: string; la
       <p className="text-honey [&>svg]:size-5" aria-hidden>
         {icon}
       </p>
-      <p className="font-display text-3xl font-extrabold leading-none">{value}</p>
+      <p className="text-3xl font-extrabold leading-none">{value}</p>
       <p className="text-sm font-bold text-muted-foreground">{label}</p>
     </div>
   );
@@ -284,7 +300,7 @@ function Fact({ icon, value, label }: { icon: React.ReactNode; value: string; la
 
 function HomeIdea({ title, text }: { title: string; text: string }) {
   return (
-    <div className="rounded-3xl bg-honey-soft p-5">
+    <div className="rounded-lg bg-honey-soft p-5">
       <p className="mb-1 font-extrabold">{title}</p>
       <p>{text}</p>
     </div>

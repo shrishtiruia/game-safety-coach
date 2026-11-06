@@ -72,7 +72,8 @@ export function SkillJourney({ s }: { s: Student }) {
       <div>
         <h2 className="text-3xl">Skill journey</h2>
         <p className="text-muted-foreground">
-          {s.firstName}'s path through six soft skills. Tap any step to see what it teaches.
+          {s.firstName}'s path through eight soft skills, covering all five areas of
+          social-emotional learning. Tap any step to see what it teaches.
         </p>
       </div>
       <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
@@ -187,7 +188,7 @@ function UnitBanner({ unit }: { unit: JourneyUnit }) {
           Unit {unit.index} · {unit.stepsDone} of {unit.stepsTotal} steps
           {unit.isFocus && " · Focus skill"}
         </p>
-        <h3 className="text-2xl capitalize leading-tight">{unit.skill}</h3>
+        <h3 className="text-2xl inline-block first-letter:uppercase leading-tight">{unit.skill}</h3>
         <p className="text-sm font-bold opacity-90">{unit.blurb}</p>
         <div className="mt-2 h-2.5 max-w-xs rounded-full bg-black/15">
           <div
@@ -207,12 +208,14 @@ function UnitBanner({ unit }: { unit: JourneyUnit }) {
             <span className="hidden sm:inline">Guidebook</span>
           </button>
         </PopoverTrigger>
-        <PopoverContent align="end" className="w-80 space-y-3 rounded-3xl border-2">
+        <PopoverContent align="end" className="w-80 space-y-3 rounded-lg border-2">
           <div>
             <p className="text-xs font-extrabold text-muted-foreground">
               Unit {unit.index} guidebook
             </p>
-            <h4 className="font-display text-xl font-extrabold capitalize">{unit.skill}</h4>
+            <h4 className="text-xl font-extrabold inline-block first-letter:uppercase">
+              {unit.skill}
+            </h4>
           </div>
           <ol className="space-y-2">
             {steps.map((n) => (
@@ -443,11 +446,11 @@ function StepCard({
 
   if (node.kind === "chest") {
     return (
-      <PopoverContent className="w-72 space-y-2 rounded-3xl border-2 bg-honey-soft text-center">
+      <PopoverContent className="w-72 space-y-2 rounded-lg border-2 bg-honey-soft text-center">
         <p className="flex justify-center text-honey" aria-hidden>
           {done ? <PartyPopper className="size-10" /> : <Gift className="size-10" />}
         </p>
-        <h4 className="font-display text-xl font-extrabold">
+        <h4 className="text-xl font-extrabold">
           {done ? "Chest opened!" : "Bonus chest"}
         </h4>
         <p className="text-sm">
@@ -466,7 +469,7 @@ function StepCard({
 
   return (
     <PopoverContent
-      className="w-80 space-y-3 rounded-3xl border-0 p-5"
+      className="w-80 space-y-3 rounded-lg border-0 p-5"
       style={
         locked
           ? {
@@ -479,7 +482,7 @@ function StepCard({
     >
       <div>
         <p className="text-xs font-extrabold opacity-80">{stepLine}</p>
-        <h4 className="font-display text-xl font-extrabold">{node.title}</h4>
+        <h4 className="text-xl font-extrabold">{node.title}</h4>
         <p className="mt-1 text-sm opacity-90">{node.teaches}</p>
       </div>
       {node.game && !locked && (
@@ -552,7 +555,7 @@ function Rail({ s, units }: { s: Student; units: JourneyUnit[] }) {
         <RailStat icon={<Award />} value={String(s.badges)} label="badges" />
       </div>
 
-      <div className="rounded-3xl bg-card p-5 shadow-card">
+      <div className="rounded-lg border bg-card p-5 shadow-card">
         <h3 className="mb-3 text-xl">Daily quests</h3>
         <ul className="space-y-3">
           {questsOf(s).map((q) => {
@@ -583,7 +586,7 @@ function Rail({ s, units }: { s: Student; units: JourneyUnit[] }) {
         </ul>
       </div>
 
-      <div className="rounded-3xl bg-card p-5 shadow-card">
+      <div className="rounded-lg border bg-card p-5 shadow-card">
         <h3 className="mb-3 text-xl">Units</h3>
         <ul className="space-y-2">
           {units.map((u) => {
@@ -601,7 +604,9 @@ function Rail({ s, units }: { s: Student; units: JourneyUnit[] }) {
                     {u.index}
                   </span>
                   <span className="min-w-0 flex-1">
-                    <span className="block text-sm font-extrabold capitalize">{u.skill}</span>
+                    <span className="block text-sm font-extrabold first-letter:uppercase">
+                      {u.skill}
+                    </span>
                     <span className="block h-2 rounded-full bg-muted">
                       <span
                         className="block h-2 rounded-full"
@@ -623,12 +628,12 @@ function Rail({ s, units }: { s: Student; units: JourneyUnit[] }) {
       </div>
 
       {focus && (
-        <div className="flex items-center gap-3 rounded-3xl bg-honey-soft p-4">
+        <div className="flex items-center gap-3 rounded-lg bg-honey-soft p-4">
           <Pip pose="search" className="size-16 shrink-0" />
           <p className="text-sm font-bold">
             Pip's tip: {s.firstName} should practise{" "}
-            <span className="capitalize">{focus.skill}</span> next. It's their lowest skill at{" "}
-            {focus.value}%.
+            <span className="inline-block first-letter:uppercase">{focus.skill}</span> next. It's
+            their lowest skill at {focus.value}%.
           </p>
         </div>
       )}
@@ -642,7 +647,7 @@ function RailStat({ icon, value, label }: { icon: React.ReactNode; value: string
       <p className="mb-1 flex justify-center text-honey [&>svg]:size-5" aria-hidden>
         {icon}
       </p>
-      <p className="font-display text-xl font-extrabold leading-none">{value}</p>
+      <p className="text-xl font-extrabold leading-none">{value}</p>
       <p className="text-[13px] font-bold text-muted-foreground">{label}</p>
     </div>
   );

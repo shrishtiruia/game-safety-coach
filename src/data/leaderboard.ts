@@ -71,15 +71,24 @@ export function league(period: Period): LeagueRow[] {
 /* ---------- Skill spotlights: which classroom grew most in each skill ---------- */
 
 const SKILL_TO_GAME_SKILLS: Record<TrackedSkill, string[]> = {
-  empathy: ["empathy"],
-  teamwork: ["teamwork"],
-  communication: ["face-to-face conversation", "active listening", "public speaking"],
+  "self-awareness": ["self-awareness", "honesty"],
+  focus: ["focus", "calming down", "goal-setting"],
   resilience: ["handling failure", "patience"],
-  focus: ["focus"],
+  empathy: ["empathy", "respecting differences", "gratitude", "standing up for others"],
+  communication: [
+    "face-to-face conversation",
+    "active listening",
+    "public speaking",
+    "asking for help",
+  ],
+  teamwork: ["teamwork", "leadership"],
   "conflict resolution": ["conflict resolution"],
+  "decision-making": ["decision-making", "digital etiquette", "curiosity"],
 };
 
 export const SKILL_COPY: Record<TrackedSkill, { emoji: string; why: string }> = {
+  "self-awareness": { emoji: "", why: "Knowing my own feelings" },
+  "decision-making": { emoji: "", why: "Thinking choices through" },
   empathy: { emoji: "💛", why: "Noticing how others feel" },
   teamwork: { emoji: "🤝", why: "Working toward a shared goal" },
   communication: { emoji: "💬", why: "Listening and speaking up" },

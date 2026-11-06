@@ -14,6 +14,8 @@ import {
   Heart,
   MessageCircleHeart,
   RotateCcw,
+  Signpost,
+  Smile,
   Sprout,
   Target,
   Timer,
@@ -24,6 +26,8 @@ import type { TrackedSkill } from "@/data/teacher";
 import { cn } from "@/lib/utils";
 
 const SKILL_ICONS: Record<TrackedSkill, LucideIcon> = {
+  "self-awareness": Smile,
+  "decision-making": Signpost,
   empathy: Heart,
   teamwork: Handshake,
   communication: MessageCircleHeart,

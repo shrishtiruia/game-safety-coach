@@ -75,7 +75,7 @@ export const Route = createFileRoute("/students/$id")({
   errorComponent: () => <p className="p-10 text-center">Couldn't load this student.</p>,
 });
 
-const card = "rounded-3xl bg-card p-5 shadow-card md:p-6";
+const card = "rounded-lg border bg-card p-5 shadow-card md:p-6";
 const toneBg = {
   honey: "bg-honey-soft",
   leaf: "bg-leaf-soft",
@@ -250,7 +250,7 @@ function AssignedGames({ s }: { s: Student }) {
 function GameTile({ g, name }: { g: StudentGame; name: string }) {
   const m = statusMeta[g.status];
   return (
-    <article className="card-tilt overflow-hidden rounded-3xl bg-card shadow-card">
+    <article className="card-tilt overflow-hidden rounded-lg border bg-card shadow-card">
       <Link
         to="/games/$slug"
         params={{ slug: g.game.slug }}
@@ -359,21 +359,25 @@ function Development({ s }: { s: Student }) {
         </div>
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
-        <div className="rounded-3xl bg-leaf-soft p-5">
+        <div className="rounded-lg bg-leaf-soft p-5">
           <p className="flex items-center gap-1.5 text-sm font-extrabold">
             <Sparkles className="size-4" aria-hidden /> Strengths
           </p>
-          <p className="mt-1 font-display text-2xl font-extrabold capitalize">{top}</p>
+          <p className="mt-1 text-2xl font-extrabold inline-block first-letter:uppercase">
+            {top}
+          </p>
           <p className="text-sm">
             At {s.skills[top]}%, this is {s.firstName}'s strongest skill. Great time to let them
             lead a group game.
           </p>
         </div>
-        <div className="rounded-3xl bg-honey-soft p-5">
+        <div className="rounded-lg bg-honey-soft p-5">
           <p className="flex items-center gap-1.5 text-sm font-extrabold">
             <Sprout className="size-4" aria-hidden /> Growing in
           </p>
-          <p className="mt-1 font-display text-2xl font-extrabold capitalize">{weak}</p>
+          <p className="mt-1 text-2xl font-extrabold inline-block first-letter:uppercase">
+            {weak}
+          </p>
           <p className="text-sm">
             At {s.skills[weak]}%, this is the skill to practise next. Their journey highlights it as
             the focus unit.
@@ -388,7 +392,7 @@ function SkillBar({ label, value }: { label: string; value: number }) {
   const color = value >= 50 ? "bg-leaf" : "bg-honey";
   return (
     <div>
-      <div className="flex justify-between text-sm font-bold capitalize">
+      <div className="flex justify-between text-sm font-bold [&>span:first-child]:first-letter:uppercase [&>span:first-child]:inline-block">
         <span>{label}</span>
         <span>{value}%</span>
       </div>
@@ -452,7 +456,7 @@ function Badges({ s }: { s: Student }) {
             <p className="text-xs font-extrabold">
               Latest badge · {dateDaysAgo(latest.earnedDaysAgo ?? 0)}
             </p>
-            <p className="font-display text-3xl font-extrabold">{latest.def.name}</p>
+            <p className="text-3xl font-extrabold">{latest.def.name}</p>
             <p className="text-sm">{latest.def.desc}</p>
           </div>
         </button>
@@ -475,7 +479,7 @@ function BadgeTile({ b, name }: { b: StudentBadge; name: string }) {
   if (!b.earned) {
     return (
       <div
-        className="flex flex-col items-center gap-2 rounded-3xl bg-card p-4 text-center opacity-70 shadow-card"
+        className="flex flex-col items-center gap-2 rounded-lg border bg-card p-4 text-center opacity-70 shadow-card"
         aria-label={`${b.def.name} — locked`}
       >
         <span
@@ -504,7 +508,7 @@ function BadgeTile({ b, name }: { b: StudentBadge; name: string }) {
       onClick={() => celebrate(b, name)}
       aria-label={`${b.def.name} — earned, celebrate`}
       className={cn(
-        "card-tilt flex flex-col items-center gap-2 rounded-3xl p-4 text-center shadow-card",
+        "card-tilt flex flex-col items-center gap-2 rounded-lg p-4 text-center shadow-card",
         "bg-honey-soft",
       )}
     >

@@ -2,7 +2,17 @@
 // teachers, classes, students, student_skill_scores, assignments, class_weekly_progress.
 // Shared by the Teacher Profile and Student Profile pages.
 
-export const TRACKED_SKILLS = ["empathy", "teamwork", "communication", "resilience", "focus", "conflict resolution"] as const;
+// One tracked skill (or more) for each of the five CASEL areas.
+export const TRACKED_SKILLS = [
+  "self-awareness",
+  "focus",
+  "resilience",
+  "empathy",
+  "communication",
+  "teamwork",
+  "conflict resolution",
+  "decision-making",
+] as const;
 export type TrackedSkill = (typeof TRACKED_SKILLS)[number];
 
 export interface Teacher {
@@ -62,18 +72,106 @@ export const teacher: Teacher = {
 };
 
 export const classes: ClassRoom[] = [
-  { id: "cl1", teacherId: "t1", name: "Grade 4 – Room 12", grade: "Grade 4", emoji: "🦫", tone: "honey" },
-  { id: "cl2", teacherId: "t1", name: "Grade 3 – Room 8", grade: "Grade 3", emoji: "🐸", tone: "leaf" },
-  { id: "cl3", teacherId: "t1", name: "SEL Club – Fridays", grade: "Grades 3-5", emoji: "🦉", tone: "honey" },
+  {
+    id: "cl1",
+    teacherId: "t1",
+    name: "Grade 4 – Room 12",
+    grade: "Grade 4",
+    emoji: "🦫",
+    tone: "honey",
+  },
+  {
+    id: "cl2",
+    teacherId: "t1",
+    name: "Grade 3 – Room 8",
+    grade: "Grade 3",
+    emoji: "🐸",
+    tone: "leaf",
+  },
+  {
+    id: "cl3",
+    teacherId: "t1",
+    name: "SEL Club – Fridays",
+    grade: "Grades 3-5",
+    emoji: "🦉",
+    tone: "honey",
+  },
 ];
 
 const NAMES = [
-  "Ava", "Liam", "Sofia", "Noah", "Zara", "Mateo", "Priya", "Eli", "Maya", "Jonah", "Amara", "Leo", "Hana", "Diego",
-  "Chloe", "Omar", "Isla", "Kai", "Nia", "Ezra", "Lucy", "Ravi", "Grace", "Theo", "Aiyana", "Felix", "Mila", "Sam",
-  "June", "Arjun", "Rosa", "Finn", "Layla", "Owen", "Yuki", "Caleb", "Iris", "Malik", "Elena", "Ben", "Ada", "Hugo",
-  "Tess", "Kofi", "Wren", "Luca", "Ines", "Max", "Ruby", "Jude", "Lena", "Asher",
+  "Ava",
+  "Liam",
+  "Sofia",
+  "Noah",
+  "Zara",
+  "Mateo",
+  "Priya",
+  "Eli",
+  "Maya",
+  "Jonah",
+  "Amara",
+  "Leo",
+  "Hana",
+  "Diego",
+  "Chloe",
+  "Omar",
+  "Isla",
+  "Kai",
+  "Nia",
+  "Ezra",
+  "Lucy",
+  "Ravi",
+  "Grace",
+  "Theo",
+  "Aiyana",
+  "Felix",
+  "Mila",
+  "Sam",
+  "June",
+  "Arjun",
+  "Rosa",
+  "Finn",
+  "Layla",
+  "Owen",
+  "Yuki",
+  "Caleb",
+  "Iris",
+  "Malik",
+  "Elena",
+  "Ben",
+  "Ada",
+  "Hugo",
+  "Tess",
+  "Kofi",
+  "Wren",
+  "Luca",
+  "Ines",
+  "Max",
+  "Ruby",
+  "Jude",
+  "Lena",
+  "Asher",
 ];
-const ANIMALS = ["🦊", "🐻", "🐼", "🐨", "🐯", "🦁", "🐸", "🐵", "🐰", "🦉", "🐢", "🐙", "🦄", "🐝", "🦋", "🐧", "🐳", "🦔"];
+const ANIMALS = [
+  "🦊",
+  "🐻",
+  "🐼",
+  "🐨",
+  "🐯",
+  "🦁",
+  "🐸",
+  "🐵",
+  "🐰",
+  "🦉",
+  "🐢",
+  "🐙",
+  "🦄",
+  "🐝",
+  "🦋",
+  "🐧",
+  "🐳",
+  "🦔",
+];
 const INITIALS = "ABCDEFGHJKLMNOPRSTVW";
 
 function rng(seed: number) {
@@ -91,11 +189,18 @@ export const students: Student[] = classes.flatMap((c) =>
     const i = n++;
     const base = 35 + rand() * 50;
     const skills = Object.fromEntries(
-      TRACKED_SKILLS.map((s) => [s, Math.round(Math.min(98, Math.max(8, base + (rand() - 0.5) * 40)))]),
+      TRACKED_SKILLS.map((s) => [
+        s,
+        Math.round(Math.min(98, Math.max(8, base + (rand() - 0.5) * 40))),
+      ]),
     ) as Record<TrackedSkill, number>;
-    const overall = Math.round(Object.values(skills).reduce((a, b) => a + b, 0) / TRACKED_SKILLS.length);
+    const overall = Math.round(
+      Object.values(skills).reduce((a, b) => a + b, 0) / TRACKED_SKILLS.length,
+    );
     const inactive = rand() < 0.12;
-    const weekly = Array.from({ length: 8 }, (_, w) => Math.round(Math.max(5, overall - (7 - w) * (2 + rand() * 4))));
+    const weekly = Array.from({ length: 8 }, (_, w) =>
+      Math.round(Math.max(5, overall - (7 - w) * (2 + rand() * 4))),
+    );
     weekly[7] = overall;
     return {
       id: `s${i + 1}`,
@@ -138,9 +243,12 @@ export const studentName = (s: Student) => `${s.firstName} ${s.lastInitial}.`;
 
 export const overallOf = (s: Student) =>
   Math.round(TRACKED_SKILLS.reduce((a, k) => a + s.skills[k], 0) / TRACKED_SKILLS.length);
-export const topSkill = (s: Student) => TRACKED_SKILLS.reduce((a, b) => (s.skills[b] > s.skills[a] ? b : a));
-export const weakSkill = (s: Student) => TRACKED_SKILLS.reduce((a, b) => (s.skills[b] < s.skills[a] ? b : a));
-const avg = (xs: number[]) => (xs.length ? Math.round(xs.reduce((a, b) => a + b, 0) / xs.length) : 0);
+export const topSkill = (s: Student) =>
+  TRACKED_SKILLS.reduce((a, b) => (s.skills[b] > s.skills[a] ? b : a));
+export const weakSkill = (s: Student) =>
+  TRACKED_SKILLS.reduce((a, b) => (s.skills[b] < s.skills[a] ? b : a));
+const avg = (xs: number[]) =>
+  xs.length ? Math.round(xs.reduce((a, b) => a + b, 0) / xs.length) : 0;
 
 export function classStats(classId: string) {
   const list = studentsIn(classId);
@@ -150,7 +258,10 @@ export function classStats(classId: string) {
     gamesAssigned: asg.length,
     avgProgress: avg(list.map(overallOf)),
     skills: TRACKED_SKILLS.map((k) => ({ skill: k, value: avg(list.map((s) => s.skills[k])) })),
-    weekly: Array.from({ length: 8 }, (_, w) => ({ week: `W${w + 1}`, progress: avg(list.map((s) => s.weekly[w] ?? 0)) })),
+    weekly: Array.from({ length: 8 }, (_, w) => ({
+      week: `W${w + 1}`,
+      progress: avg(list.map((s) => s.weekly[w] ?? 0)),
+    })),
     assigned: asg.length * list.length,
     started: list.reduce((a, s) => a + Math.min(asg.length, s.gamesStarted), 0),
     completed: list.reduce((a, s) => a + Math.min(asg.length, s.gamesCompleted), 0),
@@ -166,11 +277,26 @@ export function needsAttention(classId: string) {
   const classAvg = avg(list.map(overallOf));
   return list
     .flatMap((s): { student: Student; reason: AttentionReason; detail: string }[] => {
-      if (s.lastActiveDaysAgo > 7) return [{ student: s, reason: "inactive" as const, detail: `Inactive for ${s.lastActiveDaysAgo} days` }];
-      if (overallOf(s) < classAvg - 15) return [{ student: s, reason: "behind" as const, detail: `${overallOf(s)}% overall · needs ${weakSkill(s)}` }];
+      if (s.lastActiveDaysAgo > 7)
+        return [
+          {
+            student: s,
+            reason: "inactive" as const,
+            detail: `Inactive for ${s.lastActiveDaysAgo} days`,
+          },
+        ];
+      if (overallOf(s) < classAvg - 15)
+        return [
+          {
+            student: s,
+            reason: "behind" as const,
+            detail: `${overallOf(s)}% overall · needs ${weakSkill(s)}`,
+          },
+        ];
       return [];
     })
     .slice(0, 6);
 }
 
-export const lastActiveLabel = (d: number) => (d === 0 ? "Today" : d === 1 ? "Yesterday" : `${d} days ago`);
+export const lastActiveLabel = (d: number) =>
+  d === 0 ? "Today" : d === 1 ? "Yesterday" : `${d} days ago`;

@@ -2,20 +2,59 @@
 // classes, leaderboard snapshots). Foreign keys are plain string ids.
 
 export const GRADES = ["K-2", "3-5", "6-8", "9-12"] as const;
-export const SKILLS = [
-  "empathy",
-  "active listening",
-  "teamwork",
-  "conflict resolution",
-  "patience",
-  "focus",
-  "public speaking",
-  "face-to-face conversation",
-  "handling failure",
-  "digital etiquette",
-  "decision-making",
-  "self-awareness",
+// Soft skills, grouped by the five CASEL competencies (casel.org). The list also
+// covers the OECD's social and emotional skills and the WEF's top human skills.
+export const SKILL_AREAS = [
+  {
+    id: "self-awareness",
+    label: "Knowing myself",
+    casel: "Self-awareness",
+    line: "Naming my feelings, telling the truth, and learning from mistakes.",
+    skills: ["self-awareness", "honesty", "handling failure"],
+  },
+  {
+    id: "self-management",
+    label: "Managing myself",
+    casel: "Self-management",
+    line: "Calming down, staying with a task, waiting my turn, and working toward a goal.",
+    skills: ["calming down", "focus", "patience", "goal-setting"],
+  },
+  {
+    id: "social-awareness",
+    label: "Understanding others",
+    casel: "Social awareness",
+    line: "Noticing how others feel, respecting differences, and saying thank you.",
+    skills: ["empathy", "respecting differences", "gratitude"],
+  },
+  {
+    id: "relationship-skills",
+    label: "Getting along",
+    casel: "Relationship skills",
+    line: "Listening, talking face to face, working as a team, solving disagreements, and asking for help.",
+    skills: [
+      "active listening",
+      "face-to-face conversation",
+      "public speaking",
+      "teamwork",
+      "conflict resolution",
+      "asking for help",
+      "standing up for others",
+      "leadership",
+    ],
+  },
+  {
+    id: "decision-making",
+    label: "Making good choices",
+    casel: "Responsible decision-making",
+    line: "Thinking choices through, being kind online, and staying curious.",
+    skills: ["decision-making", "digital etiquette", "curiosity"],
+  },
 ] as const;
+
+export const SKILLS = SKILL_AREAS.flatMap((a) => a.skills);
+export type SkillArea = (typeof SKILL_AREAS)[number];
+export const areaOf = (skill: string) =>
+  SKILL_AREAS.find((a) => (a.skills as readonly string[]).includes(skill));
 export const GAME_TYPES = [
   "role-play",
   "story choices",
@@ -39,7 +78,7 @@ export const REVIEW_TAGS = [
 ] as const;
 
 export type Grade = (typeof GRADES)[number];
-export type Skill = (typeof SKILLS)[number];
+export type Skill = (typeof SKILL_AREAS)[number]["skills"][number];
 export type GameType = (typeof GAME_TYPES)[number];
 export type GroupSize = (typeof GROUP_SIZES)[number];
 export type TimeBucket = (typeof TIMES)[number];

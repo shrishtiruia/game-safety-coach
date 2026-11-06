@@ -1,14 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import {
-  AlertTriangle,
-  ArrowUpDown,
-  Award,
-  Clock,
-  Flame,
-  Search,
-  Sparkles,
-  Users,
-} from "lucide-react";
+import { AlertTriangle, ArrowUpDown, Award, Clock, Flame, Search, Users } from "lucide-react";
 import { useMemo, useState } from "react";
 import {
   CartesianGrid,
@@ -74,7 +65,7 @@ const toneBg = {
   sky: "bg-sky-soft",
   berry: "bg-berry-soft",
 };
-const card = "rounded-3xl bg-card p-5 shadow-card md:p-6";
+const card = "rounded-lg border bg-card p-5 shadow-card md:p-6";
 
 function ProfilePage() {
   const [classId, setClassId] = useState(classes[0]!.id);
@@ -115,9 +106,6 @@ function ProfilePage() {
               </Chip>
             </div>
             <StreakDots days={teacher.streakDays} />
-            <Link to="/plan" className="btn-3d tone-leaf mt-3 w-fit">
-              <Sparkles className="size-5" aria-hidden /> Plan my week
-            </Link>
           </div>
         </div>
       </section>
@@ -304,7 +292,7 @@ function ProfilePage() {
             const c = classes.find((x) => x.id === a.classId);
             if (!g || !c) return null;
             return (
-              <article key={a.id} className="overflow-hidden rounded-3xl bg-card shadow-card">
+              <article key={a.id} className="overflow-hidden rounded-lg border bg-card shadow-card">
                 <Link
                   to="/games/$slug"
                   params={{ slug: g.slug }}
@@ -376,7 +364,7 @@ function Bar({ value, label, className }: { value: number; label: string; classN
   const color = value >= 50 ? "bg-leaf" : "bg-honey";
   return (
     <div className={className}>
-      <div className="flex justify-between text-sm font-bold capitalize">
+      <div className="flex justify-between text-sm font-bold [&>span:first-child]:first-letter:uppercase [&>span:first-child]:inline-block">
         <span>{label}</span>
         <span>{value}%</span>
       </div>
@@ -416,7 +404,7 @@ function Stat({
         {icon}
         {label}
       </p>
-      <p className="font-display text-3xl font-extrabold leading-none">{value}</p>
+      <p className="text-3xl font-extrabold leading-none">{value}</p>
     </div>
   );
 }
@@ -519,7 +507,7 @@ function Roster({ classId }: { classId: string }) {
           />
         </label>
       </div>
-      <div className="overflow-x-auto rounded-3xl bg-card shadow-card">
+      <div className="overflow-x-auto rounded-lg border bg-card shadow-card">
         <table className="w-full min-w-[820px] text-left text-sm">
           <thead className="bg-muted">
             <tr>
@@ -563,12 +551,12 @@ function Roster({ classId }: { classId: string }) {
                   <Bar value={overallOf(s)} label="" />
                 </td>
                 <td className="p-3">
-                  <span className="rounded-full bg-leaf-soft px-2.5 py-0.5 text-xs font-bold capitalize">
+                  <span className="rounded-full bg-leaf-soft px-2.5 py-0.5 text-xs font-bold inline-block first-letter:uppercase">
                     {topSkill(s)}
                   </span>
                 </td>
                 <td className="p-3">
-                  <span className="rounded-full bg-honey-soft px-2.5 py-0.5 text-xs font-bold capitalize">
+                  <span className="rounded-full bg-honey-soft px-2.5 py-0.5 text-xs font-bold inline-block first-letter:uppercase">
                     {weakSkill(s)}
                   </span>
                 </td>
@@ -621,9 +609,9 @@ function AssignDialog({
         }
       }}
     >
-      <DialogContent className="max-h-[90vh] overflow-y-auto rounded-3xl">
+      <DialogContent className="max-h-[90vh] overflow-y-auto rounded-lg">
         <DialogHeader>
-          <DialogTitle className="font-display text-2xl">Assign a game</DialogTitle>
+          <DialogTitle className="text-2xl">Assign a game</DialogTitle>
           <DialogDescription>
             Pick a game, a class, and optionally specific students.
           </DialogDescription>

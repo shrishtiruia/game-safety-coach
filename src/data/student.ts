@@ -90,15 +90,42 @@ export function studentGames(s: Student): StudentGame[] {
 /* ---------- Skill journey ---------- */
 
 const SKILL_GAME_MATCH: Record<TrackedSkill, string[]> = {
-  empathy: ["empathy"],
-  teamwork: ["teamwork"],
-  communication: ["face-to-face conversation", "active listening", "public speaking"],
+  "self-awareness": ["self-awareness", "honesty"],
+  focus: ["focus", "calming down", "goal-setting"],
   resilience: ["handling failure", "patience"],
-  focus: ["focus"],
+  empathy: ["empathy", "respecting differences", "gratitude", "standing up for others"],
+  communication: [
+    "face-to-face conversation",
+    "active listening",
+    "public speaking",
+    "asking for help",
+  ],
+  teamwork: ["teamwork", "leadership"],
   "conflict resolution": ["conflict resolution"],
+  "decision-making": ["decision-making", "digital etiquette", "curiosity"],
 };
 
 const STEPS: Record<TrackedSkill, { title: string; teaches: string }[]> = {
+  "self-awareness": [
+    { title: "Name my feeling", teaches: "Putting a word to how I feel right now." },
+    {
+      title: "Feelings in my body",
+      teaches: "Noticing where a feeling shows up: tummy, face, hands.",
+    },
+    { title: "What helps me", teaches: "Finding what helps when a feeling gets big." },
+    { title: "Tell the truth", teaches: "Being honest, even when it's hard." },
+    {
+      title: "Self-awareness chest",
+      teaches: "Unit review: check in with yourself and a partner.",
+    },
+  ],
+  "decision-making": [
+    { title: "Stop and think", teaches: "Pausing before choosing." },
+    { title: "What could happen?", teaches: "Imagining where each choice might lead." },
+    { title: "Fair for everyone", teaches: "Thinking about how a choice affects other people." },
+    { title: "Safe and kind online", teaches: "Making good choices on screens." },
+    { title: "Choices chest", teaches: "Unit review: solve a real choice with your class." },
+  ],
   empathy: [
     { title: "Name that feeling", teaches: "Spotting emotions on faces and in voices." },
     { title: "In their shoes", teaches: "Imagining how a situation feels to someone else." },
@@ -174,6 +201,8 @@ export interface JourneyUnit {
 // Two calm tones alternate so units read as separate without a rainbow.
 const UNIT_TONES: UnitTone[] = ["leaf", "honey"];
 const UNIT_BLURBS: Record<TrackedSkill, string> = {
+  "self-awareness": "Know your feelings and what helps you",
+  "decision-making": "Think choices through before you act",
   empathy: "Notice feelings and respond with kindness",
   teamwork: "Work toward a shared goal with classmates",
   communication: "Listen, speak up and keep a conversation going",

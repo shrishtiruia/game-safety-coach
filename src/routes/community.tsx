@@ -31,7 +31,7 @@ export const Route = createFileRoute("/community")({
   component: CommunityPage,
 });
 
-const card = "rounded-3xl bg-card p-5 md:p-6";
+const card = "rounded-lg border bg-card p-5 md:p-6";
 type Filter = CategoryId | "all";
 
 function CommunityPage() {
@@ -144,7 +144,7 @@ function CommunityPage() {
       <aside className="space-y-5 lg:sticky lg:top-24 lg:self-start">
         <Requests />
         <TalkedAbout threads={list} />
-        <div className="flex gap-3 rounded-3xl bg-muted p-5 text-sm">
+        <div className="flex gap-3 rounded-lg bg-muted p-5 text-sm">
           <ShieldCheck className="size-5 shrink-0" aria-hidden />
           <div className="space-y-1">
             <p className="font-extrabold">Community guidelines</p>

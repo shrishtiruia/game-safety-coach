@@ -15,7 +15,6 @@ import { Route as CommunityRouteImport } from './routes/community'
 import { Route as GoalsRouteImport } from './routes/goals'
 import { Route as LeaderboardRouteImport } from './routes/leaderboard'
 import { Route as LibraryRouteImport } from './routes/library'
-import { Route as PlanRouteImport } from './routes/plan'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as FamilyIdRouteImport } from './routes/family.$id'
@@ -58,11 +57,6 @@ const LeaderboardRoute = LeaderboardRouteImport.update({
 const LibraryRoute = LibraryRouteImport.update({
   id: '/library',
   path: '/library',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PlanRoute = PlanRouteImport.update({
-  id: '/plan',
-  path: '/plan',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProfileRoute = ProfileRouteImport.update({
@@ -138,7 +132,6 @@ export interface FileRoutesByFullPath {
   '/goals': typeof GoalsRoute
   '/leaderboard': typeof LeaderboardRoute
   '/library': typeof LibraryRoute
-  '/plan': typeof PlanRoute
   '/profile': typeof ProfileRoute
   '/search': typeof SearchRoute
   '/family/$id': typeof FamilyIdRoute
@@ -160,7 +153,6 @@ export interface FileRoutesByTo {
   '/goals': typeof GoalsRoute
   '/leaderboard': typeof LeaderboardRoute
   '/library': typeof LibraryRoute
-  '/plan': typeof PlanRoute
   '/profile': typeof ProfileRoute
   '/search': typeof SearchRoute
   '/family/$id': typeof FamilyIdRoute
@@ -183,7 +175,6 @@ export interface FileRoutesById {
   '/goals': typeof GoalsRoute
   '/leaderboard': typeof LeaderboardRoute
   '/library': typeof LibraryRoute
-  '/plan': typeof PlanRoute
   '/profile': typeof ProfileRoute
   '/search': typeof SearchRoute
   '/family/$id': typeof FamilyIdRoute
@@ -207,7 +198,6 @@ export interface FileRouteTypes {
     | '/goals'
     | '/leaderboard'
     | '/library'
-    | '/plan'
     | '/profile'
     | '/search'
     | '/family/$id'
@@ -229,7 +219,6 @@ export interface FileRouteTypes {
     | '/goals'
     | '/leaderboard'
     | '/library'
-    | '/plan'
     | '/profile'
     | '/search'
     | '/family/$id'
@@ -251,7 +240,6 @@ export interface FileRouteTypes {
     | '/goals'
     | '/leaderboard'
     | '/library'
-    | '/plan'
     | '/profile'
     | '/search'
     | '/family/$id'
@@ -274,7 +262,6 @@ export interface RootRouteChildren {
   GoalsRoute: typeof GoalsRoute
   LeaderboardRoute: typeof LeaderboardRoute
   LibraryRoute: typeof LibraryRoute
-  PlanRoute: typeof PlanRoute
   ProfileRoute: typeof ProfileRoute
   SearchRoute: typeof SearchRoute
   FamilyIdRoute: typeof FamilyIdRoute
@@ -332,13 +319,6 @@ declare module '@tanstack/react-router' {
       path: '/library'
       fullPath: '/library'
       preLoaderRoute: typeof LibraryRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/plan': {
-      id: '/plan'
-      path: '/plan'
-      fullPath: '/plan'
-      preLoaderRoute: typeof PlanRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/profile': {
@@ -442,7 +422,6 @@ const rootRouteChildren: RootRouteChildren = {
   GoalsRoute: GoalsRoute,
   LeaderboardRoute: LeaderboardRoute,
   LibraryRoute: LibraryRoute,
-  PlanRoute: PlanRoute,
   ProfileRoute: ProfileRoute,
   SearchRoute: SearchRoute,
   FamilyIdRoute: FamilyIdRoute,

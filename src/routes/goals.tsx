@@ -24,7 +24,7 @@ export const Route = createFileRoute("/goals")({
   component: GoalsPage,
 });
 
-const card = "rounded-3xl bg-card p-5 shadow-card md:p-6";
+const card = "rounded-lg border bg-card p-5 shadow-card md:p-6";
 const PERIOD: Period = "week";
 
 function GoalsPage() {
@@ -90,7 +90,7 @@ function ClassGoal() {
             <Pip pose={done ? "trophy" : "wave"} className="size-24 shrink-0" bob />
             <div className="min-w-0">
               <p className="text-xs font-extrabold text-muted-foreground">This month's dam</p>
-              <p className="font-display text-3xl font-extrabold leading-tight">
+              <p className="text-3xl font-extrabold leading-tight">
                 {goal.earned} of {goal.goal} badges
               </p>
               <p className="text-sm">
@@ -124,7 +124,7 @@ function ClassGoal() {
                   key={b.skill}
                   className="grid grid-cols-[minmax(0,160px)_1fr_32px] items-center gap-3 text-sm"
                 >
-                  <span className="font-bold capitalize">
+                  <span className="font-bold inline-block first-letter:uppercase">
                     <SkillIcon
                       skill={b.skill}
                       className="mr-1 inline size-4 align-[-2px] text-honey"
@@ -171,7 +171,7 @@ function ClassGoal() {
                 </p>
                 <p className="mt-1 text-xs font-bold text-muted-foreground">
                   <SkillIcon skill={s.skill} className="inline size-3.5 align-[-2px]" />{" "}
-                  <span className="capitalize">{s.skill}</span> ·{" "}
+                  <span className="inline-block first-letter:uppercase">{s.skill}</span> ·{" "}
                   {s.daysAgo === 0 ? "today" : `${s.daysAgo}d ago`}
                 </p>
               </li>
@@ -244,7 +244,9 @@ function Spotlights({ period }: { period: Period }) {
                 <SkillIcon skill={s.skill} className="size-6" />
               </span>
               <div>
-                <h3 className="text-xl capitalize leading-tight">{s.skill}</h3>
+                <h3 className="text-xl inline-block first-letter:uppercase leading-tight">
+                  {s.skill}
+                </h3>
                 <p className="text-xs text-muted-foreground">{SKILL_COPY[s.skill].why}</p>
               </div>
             </div>
@@ -290,7 +292,7 @@ function TopGames({ period }: { period: Period }) {
               params={{ slug: game.slug }}
               className="flex items-center gap-3 rounded-2xl p-1.5 hover:bg-muted"
             >
-              <span className="w-5 text-center font-display font-extrabold text-muted-foreground">
+              <span className="w-5 text-center font-extrabold text-muted-foreground">
                 {i + 1}
               </span>
               <span className="h-11 w-[72px] shrink-0 overflow-hidden rounded-xl">
@@ -298,7 +300,7 @@ function TopGames({ period }: { period: Period }) {
               </span>
               <span className="min-w-0 flex-1">
                 <span className="block truncate font-extrabold">{game.title}</span>
-                <span className="block truncate text-xs capitalize text-muted-foreground">
+                <span className="block truncate text-xs text-muted-foreground first-letter:uppercase">
                   {game.skills.slice(0, 2).join(" · ")}
                 </span>
               </span>
@@ -321,7 +323,7 @@ function TopCreators({ period }: { period: Period }) {
       <ol className="space-y-2">
         {list.map(({ creator, score }, i) => (
           <li key={creator.id} className="flex items-center gap-3 rounded-2xl p-1.5">
-            <span className="w-5 text-center font-display font-extrabold text-muted-foreground">
+            <span className="w-5 text-center font-extrabold text-muted-foreground">
               {i + 1}
             </span>
             <span
