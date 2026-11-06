@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
@@ -6,12 +6,11 @@ import { Check, Sparkles } from "lucide-react";
 import { finalizeEvaluation, runCheck, startEvaluation } from "@/lib/evaluation.functions";
 import { CATEGORY_INFO, type Category } from "@/lib/eval-config";
 import { CATEGORY_ICON } from "@/components/chunky";
-import { Breadcrumbs, Container } from "@/components/app-shell";
-import { GameSummaryCard } from "@/components/game-summary";
+import { SubmitFlow } from "@/components/submit-flow";
 import { useGameDetail } from "@/lib/game-queries";
 import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/games/$id_/check")({
+export const Route = createFileRoute("/submit/$id/check")({
   head: () => ({
     meta: [
       { title: "Running safety check · SkillPlay" },
@@ -71,10 +70,10 @@ function LiveCheck() {
         await finalize({ data: { evaluationId: s.evaluationId } });
         await sleep(900);
         await qc.invalidateQueries();
-        navigate({ to: "/games/$id", params: { id } });
+        navigate({ to: "/submit/$id/result", params: { id } });
       } catch (e) {
         console.error(e);
-        setError("Something hiccupped. Head back and try again.");
+        setError("Something hiccupped. Your game is saved in drafts, so you can try again.");
       }
     })();
   }, [id, start, run, finalize, navigate, qc]);
@@ -86,48 +85,25 @@ function LiveCheck() {
   const allDone = cats.length > 0 && done.size === total;
 
   return (
-    <Container className="py-10">
-      <Breadcrumbs
-        items={[
-          { label: "My games", to: "/" },
-          { label: game?.title ?? "Game", to: "/games/$id", params: { id } },
-          { label: "Safety check" },
-        ]}
-      />
-      <div className="grid items-start gap-8 lg:grid-cols-[360px_1fr]">
-        <aside className="order-last lg:sticky lg:top-24 lg:order-none">
-          {game ? (
-            <GameSummaryCard game={game} />
-          ) : (
-            <div className="h-64 animate-pulse rounded-3xl border-2 border-secondary bg-muted" />
-          )}
-        </aside>
-
-        <section className="min-w-0 rounded-3xl border-2 border-b-4 border-secondary p-6 sm:p-8">
-          <div className="mb-8 flex flex-col items-center gap-5 text-center sm:flex-row sm:text-left">
-            <div className="flex h-20 w-20 shrink-0 animate-bob items-center justify-center rounded-full bg-info-soft text-info">
-              <Sparkles className="h-10 w-10" strokeWidth={2.5} />
-            </div>
-            <div>
-              <p className="text-sm font-extrabold uppercase tracking-wide text-info">
-                Attempt {attempt}
-              </p>
-              <h1 className="text-3xl">
-                {allDone ? "All done! Tallying up…" : "Checking your game"}
-              </h1>
-              <p className="mt-1 font-bold text-muted-foreground">
-                {error ?? (allDone ? "One sec" : `About ${minsLeft} min left · ${elapsed}s in`)}
-              </p>
-              {attempt > 1 && !allDone && (
-                <p className="mt-2 text-sm font-bold text-muted-foreground">
-                  Only re-checking what had notes last time.
-                </p>
-              )}
-            </div>
-          </div>
-
+    <SubmitFlow
+      step={2}
+      title={allDone ? "All done! Tallying up…" : `Checking ${game?.title ?? "your game"}`}
+      sub={
+        error ??
+        (allDone
+          ? "One sec"
+          : `${attempt > 1 ? "Only re-checking what had notes last time. " : ""}About ${minsLeft} min left · ${elapsed}s in`)
+      }
+    >
+      {error ? (
+        <Link to="/" className="inline-flex rounded-xl font-extrabold text-info hover:underline">
+          Back to My games
+        </Link>
+      ) : (
+        <>
           <div className="mb-2 flex items-center justify-between text-sm font-extrabold">
-            <span>
+            <span className="inline-flex items-center gap-2">
+              <Sparkles className="h-4 w-4 text-info" strokeWidth={3} />
               {done.size} of {total} checks done
             </span>
             <span className="text-primary-pressed">{pct}%</span>
@@ -138,7 +114,7 @@ function LiveCheck() {
             aria-valuemin={0}
             aria-valuemax={100}
             aria-label="Safety check progress"
-            className="mb-8 h-5 w-full overflow-hidden rounded-full bg-secondary"
+            className="mb-10 h-4 w-full overflow-hidden rounded-full bg-secondary"
           >
             <div
               className="h-full rounded-full bg-primary transition-all duration-700"
@@ -146,21 +122,15 @@ function LiveCheck() {
             />
           </div>
 
-          <ul className="grid gap-3 xl:grid-cols-2">
+          <ul className="grid gap-x-8 gap-y-5 sm:grid-cols-2">
             {cats.map((c) => {
               const Icon = CATEGORY_ICON[c];
               const isDone = done.has(c);
               return (
-                <li
-                  key={c}
-                  className={cn(
-                    "flex items-center gap-4 rounded-2xl border-2 p-4 transition-colors",
-                    isDone ? "border-primary bg-primary-soft" : "border-secondary",
-                  )}
-                >
+                <li key={c} className="flex items-center gap-4">
                   <div
                     className={cn(
-                      "flex h-12 w-12 items-center justify-center rounded-2xl",
+                      "flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl transition-colors",
                       isDone
                         ? "bg-primary text-primary-foreground"
                         : "bg-muted text-muted-foreground",
@@ -168,25 +138,23 @@ function LiveCheck() {
                   >
                     <Icon className="h-6 w-6" strokeWidth={2.5} />
                   </div>
-                  <div className="flex-1">
+                  <div className="min-w-0 flex-1">
                     <p className="font-extrabold">{CATEGORY_INFO[c].label}</p>
                     <p className="text-sm font-semibold text-muted-foreground">
                       {CATEGORY_INFO[c].short}
                     </p>
                   </div>
                   {isDone ? (
-                    <div className="flex h-9 w-9 animate-pop items-center justify-center rounded-full bg-primary text-primary-foreground">
-                      <Check className="h-5 w-5" strokeWidth={4} />
-                    </div>
+                    <Check className="h-6 w-6 animate-pop text-primary" strokeWidth={4} />
                   ) : (
-                    <div className="h-7 w-7 animate-spin rounded-full border-4 border-secondary border-t-info" />
+                    <div className="h-6 w-6 animate-spin rounded-full border-4 border-secondary border-t-info" />
                   )}
                 </li>
               );
             })}
           </ul>
-        </section>
-      </div>
-    </Container>
+        </>
+      )}
+    </SubmitFlow>
   );
 }

@@ -10,53 +10,102 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as GamesIdRouteImport } from './routes/games.$id'
-import { Route as GamesIdCheckRouteImport } from './routes/games.$id_.check'
+import { Route as InsightsIndexRouteImport } from './routes/insights.index'
+import { Route as InsightsIdRouteImport } from './routes/insights.$id'
+import { Route as SubmitIndexRouteImport } from './routes/submit.index'
+import { Route as SubmitIdCheckRouteImport } from './routes/submit.$id.check'
+import { Route as SubmitIdResultRouteImport } from './routes/submit.$id.result'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const GamesIdRoute = GamesIdRouteImport.update({
-  id: '/games/$id',
-  path: '/games/$id',
+const InsightsIndexRoute = InsightsIndexRouteImport.update({
+  id: '/insights/',
+  path: '/insights/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const GamesIdCheckRoute = GamesIdCheckRouteImport.update({
-  id: '/games/$id_/check',
-  path: '/games/$id/check',
+const InsightsIdRoute = InsightsIdRouteImport.update({
+  id: '/insights/$id',
+  path: '/insights/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SubmitIndexRoute = SubmitIndexRouteImport.update({
+  id: '/submit/',
+  path: '/submit/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SubmitIdCheckRoute = SubmitIdCheckRouteImport.update({
+  id: '/submit/$id/check',
+  path: '/submit/$id/check',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SubmitIdResultRoute = SubmitIdResultRouteImport.update({
+  id: '/submit/$id/result',
+  path: '/submit/$id/result',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/games/$id': typeof GamesIdRoute
-  '/games/$id/check': typeof GamesIdCheckRoute
+  '/insights/$id': typeof InsightsIdRoute
+  '/insights/': typeof InsightsIndexRoute
+  '/submit/': typeof SubmitIndexRoute
+  '/submit/$id/check': typeof SubmitIdCheckRoute
+  '/submit/$id/result': typeof SubmitIdResultRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/games/$id': typeof GamesIdRoute
-  '/games/$id/check': typeof GamesIdCheckRoute
+  '/insights/$id': typeof InsightsIdRoute
+  '/insights': typeof InsightsIndexRoute
+  '/submit': typeof SubmitIndexRoute
+  '/submit/$id/check': typeof SubmitIdCheckRoute
+  '/submit/$id/result': typeof SubmitIdResultRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/games/$id': typeof GamesIdRoute
-  '/games/$id_/check': typeof GamesIdCheckRoute
+  '/insights/$id': typeof InsightsIdRoute
+  '/insights/': typeof InsightsIndexRoute
+  '/submit/': typeof SubmitIndexRoute
+  '/submit/$id/check': typeof SubmitIdCheckRoute
+  '/submit/$id/result': typeof SubmitIdResultRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/games/$id' | '/games/$id/check'
+  fullPaths:
+    | '/'
+    | '/insights/$id'
+    | '/insights/'
+    | '/submit/'
+    | '/submit/$id/check'
+    | '/submit/$id/result'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/games/$id' | '/games/$id/check'
-  id: '__root__' | '/' | '/games/$id' | '/games/$id_/check'
+  to:
+    | '/'
+    | '/insights/$id'
+    | '/insights'
+    | '/submit'
+    | '/submit/$id/check'
+    | '/submit/$id/result'
+  id:
+    | '__root__'
+    | '/'
+    | '/insights/$id'
+    | '/insights/'
+    | '/submit/'
+    | '/submit/$id/check'
+    | '/submit/$id/result'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  GamesIdRoute: typeof GamesIdRoute
-  GamesIdCheckRoute: typeof GamesIdCheckRoute
+  InsightsIdRoute: typeof InsightsIdRoute
+  InsightsIndexRoute: typeof InsightsIndexRoute
+  SubmitIndexRoute: typeof SubmitIndexRoute
+  SubmitIdCheckRoute: typeof SubmitIdCheckRoute
+  SubmitIdResultRoute: typeof SubmitIdResultRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -68,18 +117,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/games/$id': {
-      id: '/games/$id'
-      path: '/games/$id'
-      fullPath: '/games/$id'
-      preLoaderRoute: typeof GamesIdRouteImport
+    '/insights/': {
+      id: '/insights/'
+      path: '/insights'
+      fullPath: '/insights/'
+      preLoaderRoute: typeof InsightsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/games/$id_/check': {
-      id: '/games/$id_/check'
-      path: '/games/$id/check'
-      fullPath: '/games/$id/check'
-      preLoaderRoute: typeof GamesIdCheckRouteImport
+    '/insights/$id': {
+      id: '/insights/$id'
+      path: '/insights/$id'
+      fullPath: '/insights/$id'
+      preLoaderRoute: typeof InsightsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/submit/': {
+      id: '/submit/'
+      path: '/submit'
+      fullPath: '/submit/'
+      preLoaderRoute: typeof SubmitIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/submit/$id/check': {
+      id: '/submit/$id/check'
+      path: '/submit/$id/check'
+      fullPath: '/submit/$id/check'
+      preLoaderRoute: typeof SubmitIdCheckRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/submit/$id/result': {
+      id: '/submit/$id/result'
+      path: '/submit/$id/result'
+      fullPath: '/submit/$id/result'
+      preLoaderRoute: typeof SubmitIdResultRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -87,8 +157,11 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  GamesIdRoute: GamesIdRoute,
-  GamesIdCheckRoute: GamesIdCheckRoute,
+  InsightsIdRoute: InsightsIdRoute,
+  InsightsIndexRoute: InsightsIndexRoute,
+  SubmitIndexRoute: SubmitIndexRoute,
+  SubmitIdCheckRoute: SubmitIdCheckRoute,
+  SubmitIdResultRoute: SubmitIdResultRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
