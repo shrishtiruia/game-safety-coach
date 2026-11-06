@@ -5,10 +5,11 @@ import type { Tables } from "@/integrations/supabase/types";
  * so the library and insights show a realistic portfolio of 4 live games.
  * They can't be safety-checked or edited until they're real database rows.
  */
-export const SAMPLE_GAMES: Tables<"games">[] = [
+export const SAMPLE_GAMES: (Tables<"games"> & { hosted_url: string })[] = [
   {
     id: "44444444-4444-4444-4444-444444444444",
     title: "Say It Out Loud",
+    hosted_url: "https://play.skillplay.example/say-it-out-loud",
     maker_name: "Bright Byte Studio",
     skill: "public_speaking",
     grade_band: "6-8",
@@ -22,6 +23,7 @@ export const SAMPLE_GAMES: Tables<"games">[] = [
   {
     id: "55555555-5555-5555-5555-555555555555",
     title: "Chat Quest",
+    hosted_url: "https://play.skillplay.example/chat-quest",
     maker_name: "Bright Byte Studio",
     skill: "conversation",
     grade_band: "6-8",
@@ -35,6 +37,7 @@ export const SAMPLE_GAMES: Tables<"games">[] = [
   {
     id: "66666666-6666-6666-6666-666666666666",
     title: "Team Up Tower",
+    hosted_url: "https://play.skillplay.example/team-up-tower",
     maker_name: "Bright Byte Studio",
     skill: "collaboration",
     grade_band: "6-8",

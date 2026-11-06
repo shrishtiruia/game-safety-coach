@@ -5,12 +5,16 @@ import { useEffect, useRef, useState } from "react";
 import { Check, Sparkles } from "lucide-react";
 import { finalizeEvaluation, runCheck, startEvaluation } from "@/lib/evaluation.functions";
 import { CATEGORY_INFO, type Category } from "@/lib/eval-config";
-import { CATEGORY_ICON } from "@/components/chunky";
 import { SubmitFlow } from "@/components/submit-flow";
 import { Dam, Pip, SpeechBubble, type LogState, type PipPose } from "@/components/mascot";
 import { queueFirstLiveCelebration } from "@/components/mascot/first-live-toast";
 import { isLive } from "@/lib/game-status";
 import { useGameDetail } from "@/lib/game-queries";
+import { recordReview } from "@/lib/submit.functions";
+import type { ParsedUpload } from "@/lib/upload/read-upload";
+import { attachUpload, discardUpload, getUpload } from "@/lib/upload/session-upload";
+import { CATEGORY_ICON, ChunkyButton } from "@/components/chunky";
+import { GameDropzone } from "@/components/game-dropzone";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/submit/$id/check")({
@@ -37,6 +41,7 @@ function LiveCheck() {
   const start = useServerFn(startEvaluation);
   const run = useServerFn(runCheck);
   const finalize = useServerFn(finalizeEvaluation);
+  const record = useServerFn(recordReview);
   const started = useRef(false);
   const { data } = useGameDetail(id);
   const game = data?.game;
@@ -49,6 +54,9 @@ function LiveCheck() {
   // Real progress events for the dam: checks in the order they finished, and whether each found an issue.
   const [finished, setFinished] = useState<{ category: Category; leak: boolean }[]>([]);
   const [result, setResult] = useState<string | null>(null);
+  // The file is read in the browser; only its extracted text is sent with each check.
+  const [upload, setUpload] = useState(() => getUpload(id));
+  const [pendingFile, setPendingFile] = useState<ParsedUpload | null>(null);
 
   useEffect(() => {
     const t = setInterval(() => setElapsed((e) => e + 1), 1000);
@@ -56,7 +64,7 @@ function LiveCheck() {
   }, []);
 
   useEffect(() => {
-    if (started.current) return;
+    if (!upload || started.current) return;
     started.current = true;
     (async () => {
       try {
@@ -67,7 +75,14 @@ function LiveCheck() {
         await Promise.all(
           s.categories.map(async (c, i) => {
             const [checked] = await Promise.all([
-              run({ data: { evaluationId: s.evaluationId, category: c } }),
+              run({
+                data: {
+                  evaluationId: s.evaluationId,
+                  category: c,
+                  content: upload.digest,
+                  ruleFindings: upload.rules.filter((r) => r.category === c),
+                },
+              }),
               sleep(minPer + i * (s.attempt === 1 ? 2500 : 1500)),
             ]);
             setDone((d) => new Set(d).add(c));
@@ -77,6 +92,9 @@ function LiveCheck() {
         const final = await finalize({ data: { evaluationId: s.evaluationId } });
         setResult(final.result);
         if (isLive(final.result)) queueFirstLiveCelebration();
+        // Keep only the fingerprint and review date, then forget the extracted text.
+        await record({ data: { gameId: id, sha256: upload.sha256 } }).catch(() => {});
+        discardUpload(id);
         await sleep(900);
         await qc.invalidateQueries();
         navigate({ to: "/submit/$id/result", params: { id } });
@@ -85,7 +103,7 @@ function LiveCheck() {
         setError("Something hiccupped. Your game is saved in drafts, so you can try again.");
       }
     })();
-  }, [id, start, run, finalize, navigate, qc]);
+  }, [id, upload, start, run, finalize, record, navigate, qc]);
 
   const total = cats.length || 6;
   const pct = Math.round((done.size / total) * 100);
@@ -111,9 +129,35 @@ function LiveCheck() {
             ? { pose: "thinking", line: "Found a gap, let's patch it." }
             : { pose: "working" };
 
+  if (!upload) {
+    return (
+      <SubmitFlow
+        step={3}
+        game={game}
+        title={`Upload ${game?.title ?? "your game"} to run the check`}
+        sub="We never keep a copy of your file, so we need it again for each check."
+      >
+        <GameDropzone upload={pendingFile} onChange={setPendingFile} />
+        <div className="mt-8 flex justify-end">
+          <ChunkyButton
+            size="lg"
+            disabled={!pendingFile}
+            onClick={() => {
+              if (!pendingFile) return;
+              attachUpload(id, pendingFile);
+              setUpload(pendingFile);
+            }}
+          >
+            Run safety check
+          </ChunkyButton>
+        </div>
+      </SubmitFlow>
+    );
+  }
+
   return (
     <SubmitFlow
-      step={2}
+      step={3}
       game={game}
       title={allDone ? "All done! Tallying up…" : `Checking ${game?.title ?? "your game"}`}
       sub={

@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as InsightsIndexRouteImport } from './routes/insights.index'
 import { Route as InsightsIdRouteImport } from './routes/insights.$id'
 import { Route as SubmitIndexRouteImport } from './routes/submit.index'
+import { Route as SubmitDetailsRouteImport } from './routes/submit.details'
 import { Route as SubmitIdCheckRouteImport } from './routes/submit.$id.check'
 import { Route as SubmitIdResultRouteImport } from './routes/submit.$id.result'
 
@@ -36,6 +37,11 @@ const SubmitIndexRoute = SubmitIndexRouteImport.update({
   path: '/submit/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SubmitDetailsRoute = SubmitDetailsRouteImport.update({
+  id: '/submit/details',
+  path: '/submit/details',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SubmitIdCheckRoute = SubmitIdCheckRouteImport.update({
   id: '/submit/$id/check',
   path: '/submit/$id/check',
@@ -50,6 +56,7 @@ const SubmitIdResultRoute = SubmitIdResultRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/insights/$id': typeof InsightsIdRoute
+  '/submit/details': typeof SubmitDetailsRoute
   '/insights/': typeof InsightsIndexRoute
   '/submit/': typeof SubmitIndexRoute
   '/submit/$id/check': typeof SubmitIdCheckRoute
@@ -58,6 +65,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/insights/$id': typeof InsightsIdRoute
+  '/submit/details': typeof SubmitDetailsRoute
   '/insights': typeof InsightsIndexRoute
   '/submit': typeof SubmitIndexRoute
   '/submit/$id/check': typeof SubmitIdCheckRoute
@@ -67,6 +75,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/insights/$id': typeof InsightsIdRoute
+  '/submit/details': typeof SubmitDetailsRoute
   '/insights/': typeof InsightsIndexRoute
   '/submit/': typeof SubmitIndexRoute
   '/submit/$id/check': typeof SubmitIdCheckRoute
@@ -77,6 +86,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/insights/$id'
+    | '/submit/details'
     | '/insights/'
     | '/submit/'
     | '/submit/$id/check'
@@ -85,6 +95,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/insights/$id'
+    | '/submit/details'
     | '/insights'
     | '/submit'
     | '/submit/$id/check'
@@ -93,6 +104,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/insights/$id'
+    | '/submit/details'
     | '/insights/'
     | '/submit/'
     | '/submit/$id/check'
@@ -102,6 +114,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   InsightsIdRoute: typeof InsightsIdRoute
+  SubmitDetailsRoute: typeof SubmitDetailsRoute
   InsightsIndexRoute: typeof InsightsIndexRoute
   SubmitIndexRoute: typeof SubmitIndexRoute
   SubmitIdCheckRoute: typeof SubmitIdCheckRoute
@@ -138,6 +151,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SubmitIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/submit/details': {
+      id: '/submit/details'
+      path: '/submit/details'
+      fullPath: '/submit/details'
+      preLoaderRoute: typeof SubmitDetailsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/submit/$id/check': {
       id: '/submit/$id/check'
       path: '/submit/$id/check'
@@ -158,6 +178,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   InsightsIdRoute: InsightsIdRoute,
+  SubmitDetailsRoute: SubmitDetailsRoute,
   InsightsIndexRoute: InsightsIndexRoute,
   SubmitIndexRoute: SubmitIndexRoute,
   SubmitIdCheckRoute: SubmitIdCheckRoute,

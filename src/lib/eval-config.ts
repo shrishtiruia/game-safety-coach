@@ -1,12 +1,7 @@
 export type Severity = "must_fix" | "should_fix" | "suggestion";
 export type OverallResult = "approved" | "approved_with_notes" | "needs_changes";
 export type GameStatus =
-  | "draft"
-  | "submitted"
-  | "in_review"
-  | "approved"
-  | "approved_with_notes"
-  | "needs_changes";
+  "draft" | "submitted" | "in_review" | "approved" | "approved_with_notes" | "needs_changes";
 
 export const CATEGORIES = [
   "content_safety",
@@ -98,15 +93,24 @@ export type FindingInput = {
   confidence: number;
 };
 
-/** Demo fallback results used when the AI call fails or times out (first attempt only). */
-export const FALLBACK_FINDINGS: Record<string, Partial<Record<Category, FindingInput[]>>> = {
+/**
+ * Demo fallback results used when the AI call fails or times out (first attempt only).
+ * `locate` is a pattern for finding the matching line in an uploaded game, so the
+ * evidence can cite the file and line.
+ */
+export const FALLBACK_FINDINGS: Record<
+  string,
+  Partial<Record<Category, (FindingInput & { locate?: string })[]>>
+> = {
   "Haggle Hero": {
     age_fit: [
       {
         severity: "should_fix",
         title: "Level 3 dialogue reads above 7th grade",
+        locate: "Notwithstanding|necessitates",
         evidence: "Level 3, merchant counter-offer text",
-        why_it_matters: "Struggling readers may tune out right when the negotiation gets interesting.",
+        why_it_matters:
+          "Struggling readers may tune out right when the negotiation gets interesting.",
         suggested_fix: "Shorten sentences and swap complex words for everyday ones.",
         confidence: 0.86,
       },
@@ -115,6 +119,7 @@ export const FALLBACK_FINDINGS: Record<string, Partial<Record<Category, FindingI
       {
         severity: "should_fix",
         title: '"Learn more" link leaves the game',
+        locate: "Learn more",
         evidence: "End screen, footer link",
         why_it_matters: "Students can wander to an external site without a teacher knowing.",
         suggested_fix: "Remove the link or move it to a teacher-only info page.",
@@ -125,6 +130,7 @@ export const FALLBACK_FINDINGS: Record<string, Partial<Record<Category, FindingI
       {
         severity: "suggestion",
         title: "Pacing suggests 20 minutes, not 15",
+        locate: "15 minutes",
         evidence: "Game listing, stated duration",
         why_it_matters: "Teachers plan tight periods around your time estimate.",
         suggested_fix: "Update the duration to 20 minutes or trim a level.",
@@ -137,9 +143,11 @@ export const FALLBACK_FINDINGS: Record<string, Partial<Record<Category, FindingI
       {
         severity: "must_fix",
         title: "Roast cards mock appearance and weight",
+        locate: "Card 4:",
         evidence: "Round 2, 'roast' prompt cards 4 and 7",
         why_it_matters: "Body-based jokes can hurt students and invite bullying.",
-        suggested_fix: "Rewrite cards to playfully challenge ideas or choices, never bodies or looks.",
+        suggested_fix:
+          "Rewrite cards to playfully challenge ideas or choices, never bodies or looks.",
         confidence: 0.93,
       },
     ],
@@ -147,6 +155,7 @@ export const FALLBACK_FINDINGS: Record<string, Partial<Record<Category, FindingI
       {
         severity: "should_fix",
         title: "Leaderboard asks for name and school",
+        locate: "first name|school name",
         evidence: "Join screen",
         why_it_matters: "Pairing a name with a school identifies a minor.",
         suggested_fix: "Use auto-generated nicknames and drop the school field.",
@@ -157,6 +166,7 @@ export const FALLBACK_FINDINGS: Record<string, Partial<Record<Category, FindingI
       {
         severity: "suggestion",
         title: "Add a reflection step",
+        locate: "Round 2",
         evidence: "After Round 2",
         why_it_matters: "Helps students connect banter to respectful disagreement.",
         suggested_fix: 'Add a 2-minute "how did that land?" discussion card.',
